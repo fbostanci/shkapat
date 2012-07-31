@@ -1,0 +1,14 @@
+This package was debianized by Fatih Bostancı <faopera@gmail.com> on Tue, 31 Jul 2012 16:09:59 +0300
+
+Upstream Author: Fatih Bostancı <faopera@gmail.com>
+
+Copyright: 
+- 2012 Fatih Bostancı
+- Shkapat icon from the Oxygen Icon Theme Project (icon name: system-shutdown.png)
+
+License:
+    GPL v3 see http://www.gnu.org/ for details
+
+The Debian packaging is copyright 2012 Fatih Bostancı <faopera@gmail.com> and available on the same terms as the package itself (see above).
+
+See /usr/share/common-licenses/GPL-3 on your debian system.

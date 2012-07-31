@@ -1,0 +1,34 @@
+[Desktop Entry]
+Version=1.0
+Name=Shkapat
+Comment=Shkapat arayüz uygulaması
+GenericName=Shkapat
+Exec=/usr/bin/shkapat
+Icon=shkapat
+Terminal=false
+Encoding=UTF-8
+X-MultipleArgs=false
+Type=Application
+Categories=Utility;
+X-Ayatana-Desktop-Shortcuts=ShkapatG1;ShkapatG2;ShkapatG3;ShkapatG4;
+TargetEnvironment=Unity
+
+[ShkapatG1 Shortcut Group]
+Name=Şimdi yeniden başlat
+Exec=/usr/bin/shkapat --unity ybaslat
+TargetEnvironment=Unity
+
+[ShkapatG2 Shortcut Group]
+Name=Şimdi Kapat
+Exec=/usr/bin/shkapat --unity kapat
+TargetEnvironment=Unity
+
+[ShkapatG3 Shortcut Group]
+Name=Girilecek saatte kapat
+Exec=/usr/bin/shkapat --unity saat
+TargetEnvironment=Unity
+
+[ShkapatG4 Shortcut Group]
+Name=Girilecek dakika sonra kapat
+Exec=/usr/bin/shkapat --unity dakika
+TargetEnvironment=Unity
