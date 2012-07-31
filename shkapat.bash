@@ -3,7 +3,7 @@
 # GPLv3
 # v1.6.0
 
-
+### Değişkenler- Giriş {{{{
 AD="${0##*/}"
 SURUM=1.6.0
 
@@ -14,9 +14,12 @@ SAAT=0
 DAKIKA=0
 UNITY=0
 HATA_VER=0
+# }}}
 
+# TODO: (1.7) Zamanlanmış görevi iptal etme özelliği.
 # TODO: (2.0) KDE den başka masaüstleri için düzgün kapatma desteği araştır.
 
+### Pid denetle {{{
 function pid_denetle() {
   local pid ypid=$$
 
@@ -49,8 +52,9 @@ function pid_denetle() {
     fi
     exit 1
   }
-}
+} # }}}
 
+### Bilgi fonksiyonu {{{
 function bilgi() {
   if [[ "$1" = b ]]
   then
@@ -82,8 +86,9 @@ function bilgi() {
         '-h, --yardım, --yardim' \
         '    Bu yardım çıktısını görüntüler.'
   fi
-}
+} # }}}
 
+### Kapat -bilg_kapat {{{
 function bilg_kapat() {
   local istek
 
@@ -95,8 +100,9 @@ function bilg_kapat() {
       dbus-send --system --print-reply --dest=org.freedesktop.ConsoleKit \
         /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.${istek}
   fi
-}
+} # }}}
 
+### Kapat penceresi {{{
 function kapat_penceresi() {
   local gor c d=20
 
@@ -145,8 +151,9 @@ function kapat_penceresi() {
         }
         bilg_kapat 2
   fi
-}
+} # }}}
 
+### Değişkenleri ayıkla {{{
 DES=$(getopt -n "${AD}" -o 's:d:ykhv' -l \
       'saat:,dakika:,ybaşlat,ybaslat,kapat,help,yardım,yardim,surum,sürüm,version,gui,arayuz,arayüz,unity' -- "$@")
 (( $? == 1 )) && exit 1
@@ -183,8 +190,9 @@ do
       break ;;
   esac
   shift
-done
+done # }}}
 
+### ARAYUZ yonetimi {{{
 (( ARAYUZ )) && {
   if test -x "$(which kdialog 2>/dev/null)"
   then
@@ -286,8 +294,9 @@ done
           (( $? == 1 )) && exit 1
       fi
   fi
-}
+} # }}}
 
+### UNITY yönetimi {{{
 (( UNITY )) && {
   ARAYUZ=1
   if test -x "$(which kdialog 2>/dev/null)"
@@ -361,8 +370,9 @@ done
           (( $? == 1 )) && exit 1
       fi
   fi
-}
+} # }}}
 
+### YENIDEN_BASLAT yönetimi {{{
 (( YENIDEN_BASLAT )) && {
   if (( ARAYUZ ))
   then
@@ -412,8 +422,9 @@ done
       printf '\n\n%s\a\n' 'Yeniden başlatılıyor...'
   fi
   bilg_kapat 1
-}
+} # }}}
 
+# SIMDI_KAPAT yönetimi {{{
 (( SIMDI_KAPAT )) && {
   if (( ARAYUZ ))
   then
@@ -463,8 +474,9 @@ done
       printf '\n\n%s\a\n' 'Kapatılıyor...'
   fi
   bilg_kapat 2
-}
+} # }}}
 
+### DAKIKA yönetimi {{{
 (( DAKIKA )) && {
   pid_denetle
   [[ -n $(tr -d 0-9 <<<$girilen_dakika) ]] && {
@@ -516,8 +528,9 @@ done
 
   bekle=$((girilen_dakika * 60 - 20))
   sleep $bekle; kapat_penceresi
-}
+} # }}}
 
+# SAAT yönetimi {{{
 (( SAAT )) && {
   pid_denetle
   [[ $girilen_saat != @([0-2][0-9]:[0-5][0-9]) ]] && {
@@ -606,4 +619,6 @@ done
       printf '%s: bilgisayarınızın kapatılacağı saat: %s %s\a\n' "${AD}" "${gun}" "$girilen_saat"
   fi
   sleep $bekle; kapat_penceresi
-}
+} # }}}
+
+# vim:set ts=2 sw=2 et:

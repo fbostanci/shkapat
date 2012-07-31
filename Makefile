@@ -1,4 +1,8 @@
-
+#
+#
+#	Shkapat 1.6.0 Makefile
+#
+#
 
 SHELL= /bin/bash
 
