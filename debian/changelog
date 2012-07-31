@@ -1,5 +1,7 @@
-shkapat (1.6.0~distroguide~precise) precise; urgency=low
+shkapat (1.6.0-1~distroguide~precise) precise; urgency=low
 
-  * initial release
+  * initial release.
+ 
+ -- Fatih Bostanci <faopera@gmail.com>  Tue, 31 Jul 2012 16:09:59 +0300
 
--- Fatih Bostancı <faopera@gmail.com>  Tue, 31 Jul 2012 16:09:59 +0300
+
