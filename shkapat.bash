@@ -155,7 +155,7 @@ function kapat_penceresi() {
 
 ### Değişkenleri ayıkla {{{
 DES=$(getopt -n "${AD}" -o 's:d:ykhv' -l \
-      'saat:,dakika:,ybaşlat,ybaslat,kapat,help,yardım,yardim,surum,sürüm,version,gui,arayuz,arayüz,unity' -- "$@")
+      'saat:,dakika:,ybaşlat,ybaslat,kapat,help,yardım,yardim,surum,sürüm,version,gui,arayuz,arayüz,unity:' -- "$@")
 (( $? == 1 )) && exit 1
 
 eval set -- "$DES"
@@ -175,8 +175,7 @@ do
       SIMDI_KAPAT=1 ;;
     --unity)
       UNITY=1
-      shift 2; gorev="$1"
-      break ;;
+      shift; gorev="$1" ;;
     -v|--s[uü]r[uü]m)
       bilgi b
       exit 0 ;;
@@ -263,7 +262,7 @@ done # }}}
   elif test -x "$(which zenity 2>/dev/null)"
   then
       arayuz=3
-      donus=$(zenity --title="${AD^}" --width 400 --height 250 --text='İşlemi seçin:' \
+      donus=$(zenity --title="${AD^}" --width 400 --height 250 --text='İşlemi seçiniz:' \
               --window-icon=gnome-shutdown --hide-column=1 --print-column=1 \
               --column=' ' --column='Seçenekler' --list \
               yb 'Şimdi yeniden başlat' \

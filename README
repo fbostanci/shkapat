@@ -1,0 +1,59 @@
+Son Güncelleme: Wed, 01 Aug 2012 13:19:36 +0300
+
+Shkapat 1.6.0 Süre ayarlı bilgisayar kapatıcı.
+
+
+###
+HAKKINDA
+
+Shkapat, normal şekilde sisteminizi kapatma ve yeniden başlatma
+yanında saat ya da dakika olarak gireceğiniz zamanda sisteminizi
+ kapatmanızı sağlar.
+
+###
+BAĞIMLILIKLAR
+  * bash
+  * sed
+
+Arayüz kullanımı için ek olarak:
+  * KDialog, YAD ya da Zenity'den herhangi birinin
+    kurulu olması gerekmektedir.
+
+###
+KURULUM ve KALDIRMA
+
+** Archlinux için kurulum:
+
+PKGBUILD dosyasının bulunduğu dizinde makepkg -si komutunu girin.
+
+**
+
+** Ubuntu için Launchpad PPA üzerinden kurulum:
+
+sudo add-apt-repository ppa:fbostanci/distroguide
+sudo apt-get update
+sudo apt-get install shkapat
+
+**
+
+** Diğer dağitimlar için kurulum:
+
+(sudo) make install
+
+komutunu verin. Eğer paketleme yapıyorsanız, DESTDIR ile paket kurulum dizinini belirtin.
+
+kaldırma için:
+
+(sudo) make uninstall
+
+komutunu girin.
+**
+
+###
+LİSANS
+
+Shkapat, GPL 3 ile lisanslanmıştır. Ayrıntılar için COPYING dosyasına bakın.
+Shkapat simgesi, Oxygen Icon Theme Project'ten alınmıştır. (kullanılan simgenin adı: system-shutdown)
+
+Oxygen icon theme is dual licensed. You may copy it under the Creative Common Attribution-ShareAlike 3.0 License
+ or the GNU Library General Public License.

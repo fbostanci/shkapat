@@ -4,7 +4,7 @@
 #
 #
 
-SHELL= /bin/bash
+SHELL = /bin/bash
 
 all:
 	@echo "Nothing to make, use 'make install' to perform an installation."
@@ -29,4 +29,5 @@ uninstall:
 	@rm -f $(DESTDIR)/usr/share/icons/hicolor/64x64/apps/shkapat.png
 	@rm -f $(DESTDIR)/usr/share/icons/hicolor/128x128/apps/shkapat.png
 	@echo Shkapat sisteminizden kaldırıldı.
+
 .PHONY: all install uninstall
