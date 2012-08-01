@@ -1,3 +1,9 @@
+shkapat (1.7.0-1~distroguide~precise) precise; urgency=low
+
+  * askiya alma destegi eklendi.
+
+ -- Fatih Bostanci <faopera@gmail.com> Wed, 01 Aug 2012 18:58:53 +0300
+
 shkapat (1.6.0-1~distroguide~precise) precise; urgency=low
 
   * initial release.
