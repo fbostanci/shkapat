@@ -1,6 +1,6 @@
 #
 #
-#	Shkapat 1.6.0 Makefile
+#	Shkapat 1.7.0 Makefile
 #
 #
 
@@ -22,6 +22,7 @@ install:
 
 uninstall:
 	@rm -f $(DESTDIR)/usr/bin/shkapat
+	@rm -f $(DESTDIR)/usr/share/applications/shkapat.desktop
 	@rm -f $(DESTDIR)/usr/share/icons/hicolor/16x16/apps/shkapat.png
 	@rm -f $(DESTDIR)/usr/share/icons/hicolor/22x22/apps/shkapat.png
 	@rm -f $(DESTDIR)/usr/share/icons/hicolor/32x32/apps/shkapat.png
