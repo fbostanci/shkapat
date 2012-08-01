@@ -113,9 +113,8 @@ function bilg_kapat() {
           qdbus org.kde.ksmserver /KSMServer logout 0 $istek 2
       elif [[ $istek == 3 ]]
       then
-          qdbus org.freedesktop.PowerManagement \
-            /org/freedesktop/PowerManagement \
-            org.freedesktop.PowerManagement.Suspend
+          qdbus --system org.freedesktop.UPower /org/freedesktop/UPower \
+            org.freedesktop.UPower.Suspend 
      fi
   else
       if [[ $istek == @(1|2) ]]
@@ -125,8 +124,8 @@ function bilg_kapat() {
             /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.${istek}
      elif [[ $istek = 3 ]]
      then
-         dbus-send --print-reply --dest='org.freedesktop.PowerManagement' \
-           /org/freedesktop/PowerManagement org.freedesktop.PowerManagement.Suspend
+         dbus-send --system --print-reply --dest="org.freedesktop.UPower" \
+           /org/freedesktop/UPower org.freedesktop.UPower.Suspend
      fi
   fi
 } # }}}
