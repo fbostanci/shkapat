@@ -10,7 +10,7 @@ Encoding=UTF-8
 X-MultipleArgs=false
 Type=Application
 Categories=Utility;
-X-Ayatana-Desktop-Shortcuts=ShkapatG1;ShkapatG2;ShkapatG3;ShkapatG4;
+X-Ayatana-Desktop-Shortcuts=ShkapatG1;ShkapatG2;ShkapatG3;ShkapatG4;ShkapatG5;ShkapatG6;ShkapatG7;
 TargetEnvironment=Unity
 
 [ShkapatG1 Shortcut Group]
@@ -24,11 +24,26 @@ Exec=/usr/bin/shkapat --unity kapat
 TargetEnvironment=Unity
 
 [ShkapatG3 Shortcut Group]
+Name=Şimdi Askıya al
+Exec=/usr/bin/shkapat --unity askiya-al
+TargetEnvironment=Unity
+
+[ShkapatG4 Shortcut Group]
 Name=Girilecek saatte kapat
 Exec=/usr/bin/shkapat --unity saat
 TargetEnvironment=Unity
 
-[ShkapatG4 Shortcut Group]
-Name=Girilecek dakika sonra kapat
+[ShkapatG5 Shortcut Group]
+Name=Girilecek saatte askıya al
+Exec=/usr/bin/shkapat --unity askiya-al-saat
+TargetEnvironment=Unity
+
+[ShkapatG6 Shortcut Group]
+Name=Girilecek dakika kadar sonra kapat
 Exec=/usr/bin/shkapat --unity dakika
+TargetEnvironment=Unity
+
+[ShkapatG7 Shortcut Group]
+Name=Girilecek dakika kadar sonra askıya al
+Exec=/usr/bin/shkapat --unity askiya-al-dakika
 TargetEnvironment=Unity
