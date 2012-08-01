@@ -294,8 +294,10 @@ done # }}}
               kt 'Şimdi kapat' off \
               sp 'Şimdi askıya al' off \
               sa 'Girilecek saatte kapat' off \
+              st 'Girilecek saatte askıya al' off \
               dk 'Girilecek dakika sonra kapat' off \
-              st 'Girilecek saatte askıya al' off)
+              st 'Girilecek saatte askıya al' off \
+              sd 'Girilecek dakika sonra askıya al.' off)
       (( $? == 1 )) && exit 1
 
       if [[ $donus = yb ]]
@@ -316,9 +318,6 @@ done # }}}
       elif [[ $donus = st ]]
       then
           SAAT_ASKIYA_AL=1
-      elif [[ $donus = sa ]]
-      then
-          SAAT=1
           aski_girilen_saat=$(kdialog --icon=system-shutdown --title "${AD^}" --inputbox \
                               'Askıya alınma saatini giriniz <ss:dd>' $(date -d '1 minute' +%H:%M))
           (( $? == 1 )) && exit 1
@@ -340,8 +339,8 @@ done # }}}
       arayuz=2
       donus=$(yad --title="${AD^}" --text='İşlemi seçiniz:' \
               --window-icon=gnome-shutdown \
-              --sticky --center --fixed \
-              --width=280 --height=280 \
+              --sticky --center \
+              --width=340 --height=300 \
               --list  --hide-column=1 --print-column=1 \
               --column=' ' --column='Seçenekler' --separator='' \
               yb 'Şimdi yeniden başlat' \
@@ -349,8 +348,8 @@ done # }}}
               sp 'Şimdi askıya al' \
               sa 'Girilecek saatte kapat' \
               st 'Girilecek saatte askıya al' \
-              dk 'Girilecek dakika sonra kapat' \
-              sd 'Girilecek dakika sonra askıya al')
+              dk 'Girilecek dakika kadar sonra kapat' \
+              sd 'Girilecek dakika kadar sonra askıya al')
       (( $? == 1 )) && exit 1
 
       if [[ $donus = yb ]]
@@ -394,7 +393,7 @@ done # }}}
   elif test -x "$(which zenity 2>/dev/null)"
   then
       arayuz=3
-      donus=$(zenity --title="${AD^}" --width 400 --height 250 --text='İşlemi seçiniz:' \
+      donus=$(zenity --title="${AD^}" --width 360 --height 300 --text='İşlemi seçiniz:' \
               --window-icon=gnome-shutdown --hide-column=1 --print-column=1 \
               --column=' ' --column='Seçenekler' --list \
               yb 'Şimdi yeniden başlat' \
@@ -402,8 +401,8 @@ done # }}}
               sp 'Şimdi askıya al' \
               sa 'Girilecek saatte kapat' \
               st 'Girilecek saatte askıya al' \
-              dk 'Girilecek dakika sonra kapat'
-              sd 'Girilecek dakika sonra askıya al')
+              dk 'Girilecek dakika kadar sonra kapat'
+              sd 'Girilecek dakika kadar sonra askıya al')
       (( $? == 1 )) && exit 1
 
       if [[ $donus = yb ]]
