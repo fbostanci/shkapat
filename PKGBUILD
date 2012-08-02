@@ -3,7 +3,7 @@
 pkgname=shkapat
 pkgver=1.7.0
 pkgrel=1
-pkgdesc="Ayarlanabilir bilgisayar kapatıcı"
+pkgdesc="Süre ayarlı bilgisayar kapatıcı"
 license=('GPL3')
 arch=('any')
 depends=()

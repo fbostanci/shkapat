@@ -19,12 +19,11 @@ UNITY=0
 HATA_VER=0
 # }}}
 
-# TODO: (1.7) Zamanlanmış görevi iptal etme özelliği.
 # TODO: (2.0) KDE den başka masaüstleri için düzgün kapatma desteği araştır.
 
 ### Pid denetle {{{
 function pid_denetle() {
-  local pid ypid=$$
+  local pid ypid=$$ ileti yanit
 
   if [[ -f /tmp/.shkapat.pid && -n $(ps -p $( < /tmp/.shkapat.pid) -o comm=) ]]
   then
@@ -37,23 +36,64 @@ function pid_denetle() {
   (( HATA_VER )) && {
     if (( ARAYUZ ))
     then
-        if (( arayuz == 1 ))
+        ileti="$(printf '%s\n%s' \
+                   "Başka bir zamanlanmış görev mevcut. pid=${pid}" \
+                   'Şimdi iptal etmek ister misiniz?')"
+        if  (( arayuz == 1 ))
         then
-            kdialog --title="${AD^}" --icon=system-shutdown \
-              --msgbox "$(printf 'Başka bir zamanlanmış görev mevcut. pid=%s' "${pid}")"
+            kdialog --title="${AD^}" --icon=system-shutdown --warningyesno "${ileti}"
+            case $? in
+              0)
+                kill -9 ${pid} &>/dev/null && \
+                kdialog --title="${AD^}" --icon=system-shutdown \
+                  --msgbox "Görev iptal edildi."
+                exit 0 ;;
+              1)
+                exit 1 ;;
+            esac
         elif (( arayuz == 2 ))
         then
-            yad --title="${AD^}" --timeout=10 --window-icon=gnome-shutdown --sticky --center --fixed \
-              --text "$(printf 'Başka bir zamanlanmış görev mevcut. pid=%s' "${pid}")"
+            yad --title="${AD^}" --window-icon=gnome-shutdown --sticky --center --fixed --on-top \
+              --text "${ileti}"
+            case $? in
+              0)
+                kill -9 ${pid} &>/dev/null && \
+                yad --title="${AD^}" --timeout=10 --window-icon=gnome-shutdown --sticky --center --fixed \
+                  --text "Görev iptal edildi." --on-top
+                exit 0 ;;
+              1)
+                exit 1 ;;
+            esac
         elif (( arayuz == 3 ))
         then
-            zenity --title="${AD^}" --info --timeout=10 --window-icon=gnome-shutdown \
-              --text "$(printf 'Başka bir zamanlanmış görev mevcut. pid=%s' "${pid}")"
+            zenity --title="${AD^}" --question --timeout=10 --window-icon=gnome-shutdown \
+              --text "${ileti}"
+            case $? in
+              0)
+                kill -9 ${pid} &>/dev/null && \
+                zenity --title="${AD^}" --info --timeout=10 --window-icon=gnome-shutdown \
+                  --text "Görev iptal edildi."
+                exit 0 ;;
+              1)
+                exit 1 ;;
+            esac
         fi
     else
-        printf '%s: başka bir zamanlanmış görev mevcut. pid=%s\n' "${AD}" "${pid}"
+        printf '%s: %s\n%s\n' "${AD^}" \
+          "Başka bir zamanlanmış görev mevcut. pid=${pid}" \
+          'Şimdi iptal etmek ister misiniz?'
+
+       read -n 1 yanit
+       case ${yanit} in
+         [eEyY])
+           kill -9 ${pid} &>/dev/null
+           printf '%s: %s\n' "${AD^}" \
+             'Görev iptal edildi.'
+           exit 0 ;;
+         [hHnN])
+           exit 1 ;;
+       esac
     fi
-    exit 1
   }
 } # }}}
 
@@ -340,7 +380,7 @@ done # }}}
               --window-icon=gnome-shutdown \
               --sticky --center \
               --width=340 --height=300 \
-              --list  --hide-column=1 --print-column=1 \
+              --list --hide-column=1 --print-column=1 \
               --column=' ' --column='Seçenekler' --separator='' \
               yb 'Şimdi yeniden başlat' \
               kt 'Şimdi kapat' \
@@ -393,14 +433,14 @@ done # }}}
   then
       arayuz=3
       donus=$(zenity --title="${AD^}" --width 360 --height 300 --text='İşlemi seçiniz:' \
-              --window-icon=gnome-shutdown --hide-column=1 --print-column=1 \
-              --column=' ' --column='Seçenekler' --list \
+              --window-icon=gnome-shutdown --hide-column=1 --hide-header --print-column=1 \
+              --column=' ' --column=' ' --list \
               yb 'Şimdi yeniden başlat' \
               kt 'Şimdi kapat' \
               sp 'Şimdi askıya al' \
               sa 'Girilecek saatte kapat' \
               st 'Girilecek saatte askıya al' \
-              dk 'Girilecek dakika kadar sonra kapat'
+              dk 'Girilecek dakika kadar sonra kapat' \
               sd 'Girilecek dakika kadar sonra askıya al')
       (( $? == 1 )) && exit 1
 
@@ -920,7 +960,7 @@ done # }}}
             --text "$(printf 'Bilgisayarınızın kapatılacağı saat: %s %s' "$girilen_saat" "${gun}")" &
       fi
   else
-      printf '%s: bilgisayarınızın kapatılacağı saat: %s %s\a\n' "${AD}" "${gun}" "$girilen_saat"
+      printf '%s: bilgisayarınızın kapatılacağı saat: %s %s\a\n' "${AD}" "$girilen_saat" "${gun}"
   fi
   sleep $bekle; kapat_penceresi
 } # }}}
@@ -1011,7 +1051,7 @@ done # }}}
             --text "$(printf 'Sisteminizin askıya alınacağı saat: %s %s' "$aski_girilen_saat" "${gun}")" &
       fi
   else
-      printf '%s: sisteminizin askıya alınacağı saat: %s %s\a\n' "${AD}" "${gun}" "$aski_girilen_saat"
+      printf '%s: sisteminizin askıya alınacağı saat: %s %s\a\n' "${AD}" "$aski_girilen_saat" "${gun}"
   fi
   sleep $bekle; askiya_al_penceresi
 } # }}}
