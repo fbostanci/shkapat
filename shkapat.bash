@@ -119,10 +119,10 @@ function bilg_kapat() {
   else
       if [[ $istek == @(1|2) ]]
       then
-          [[ $istek = 2 ]] && istek=Stop || { [[ $istek = 1 ]] && istek=Restart; }
+          [[ $istek == 2 ]] && istek=Stop || { [[ $istek == 1 ]] && istek=Restart; }
           dbus-send --system --print-reply --dest='org.freedesktop.ConsoleKit' \
             /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.${istek}
-     elif [[ $istek = 3 ]]
+     elif [[ $istek == 3 ]]
      then
          dbus-send --system --print-reply --dest='org.freedesktop.UPower' \
            /org/freedesktop/UPower org.freedesktop.UPower.Suspend
