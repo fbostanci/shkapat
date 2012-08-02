@@ -1,7 +1,7 @@
 # Maintainer: Fatih Bostancı <faopera@gmail.com>
 
 pkgname=shkapat
-pkgver=1.6.0
+pkgver=1.7.0
 pkgrel=1
 pkgdesc="Ayarlanabilir bilgisayar kapatıcı"
 license=('GPL3')
@@ -23,7 +23,7 @@ build() {
        git clone "${_gitroot}" && cd ${_gitname}
   fi
 
- #${EDITOR:-${vim:-vi}} Makefile
+  #${EDITOR:-${vim:-vi}} Makefile
   msg "make başlatılıyor..."
   make DESTDIR="${pkgdir}" install
 }

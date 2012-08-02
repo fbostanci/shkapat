@@ -39,11 +39,11 @@ Exec=/usr/bin/shkapat --unity askiya-al-saat
 TargetEnvironment=Unity
 
 [ShkapatG6 Shortcut Group]
-Name=Girilecek dakika kadar sonra kapat
+Name=Girilecek dakika sonra kapat
 Exec=/usr/bin/shkapat --unity dakika
 TargetEnvironment=Unity
 
 [ShkapatG7 Shortcut Group]
-Name=Girilecek dakika kadar sonra askıya al
+Name=Girilecek dakika sonra askıya al
 Exec=/usr/bin/shkapat --unity askiya-al-dakika
 TargetEnvironment=Unity
