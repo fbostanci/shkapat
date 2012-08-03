@@ -113,25 +113,25 @@ function bilgi() {
   elif [[ $1 = y ]]
   then
       printf_bicim='\n\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s'
-      printf_bicim+='\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n\n'
-      printf_bicim+='%s\n%s\n\n%s\n%s\n\n'
+      printf_bicim+='\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n'
+      printf_bicim+='%s\n\n%s\n%s\n\n'
       printf "${printf_bicim}" \
         "${AD} [seçenek]" \
         '-k,--kapat' \
-        '    Bilgisayarı hemen kapatır.' \
-        '-y, --ybaslat, ybaşlat' \
-        '    Bilgisayarı hemen yeniden başlatır.' \
+        '    Sistemi hemen kapatır.' \
+        '-y, --yba[sş]lat' \
+        '    Sistemi hemen yeniden başlatır.' \
         '-a, --ask[ıi]ya-al' \
-        '    Bilgisayarı hemen askıya alır.' \
+        '    Sistemi hemen askıya alır.' \
         '-s, --saat <ss:dd>' \
-        '    Girilen saatte bilgisayarı kapatır.' \
+        '    Girilen saatte sistemi kapatır.' \
         '--as, --ask[ıi]ya-al-saat <ss:dd>' \
         '    Girilen saatte sistemi askıya alır.' \
         '-d, --dakika <dakika>' \
-        '    Girilen dakika kadar sonra bilgisayarı kapatır.' \
+        '    Girilen dakika kadar sonra sistemi kapatır.' \
         '--ad, --ask[ıiya]-al-dakika <dakika>' \
         '    Girilen dakika kadar sonra sistemi askıya alır.' \
-        '--arayüz, --arayuz, --gui' \
+        '--aray[uü]z --gui' \
         '    Arayüz uygulamasını başlatır.' \
         '--unity [saat|dakika|yba[sş]lat|kapat|ask[ıi]ya-al|ask[ıi]ya-al-saat|ask[ıi]ya-al-dakika]' \
         '    Unity seçkesi için özel kullanım kipi' \
@@ -195,7 +195,7 @@ function kapat_penceresi() {
            printf '%d\n' "$c"; sleep 1
         }
       ) | yad --progress --percentage=5 --title="${AD^}" \
-            --text "20 saniye sonra bilgisayar kapatılacak." --auto-close \
+            --text "20 saniye sonra sistem kapatılacak." --auto-close \
             --window-icon=gnome-shutdown --sticky --center \
             --button='Şimdi kapat:0' --button='İptal:1'
           (( $? == 0 )) && bilg_kapat 2 || exit 1
@@ -207,14 +207,14 @@ function kapat_penceresi() {
            printf '%d\n' "$c"; sleep 1
         }
       ) | zenity --progress --percentage=5 --title="${AD^}" \
-            --text "20 saniye sonra bilgisayar kapatılacak." \
+            --text "20 saniye sonra sistem kapatılacak." \
             --window-icon=gnome-shutdown --auto-close
           (( $? == 0 )) && bilg_kapat 2 || exit 1
   else
         for ((c=20; c>0; c--))
         {
            printf "\a%2d%s\r" "$c" \
-             " saniye sonra bilgisayar kapatılacak."
+             " saniye sonra sistem kapatılacak."
            sleep 1
         }
         bilg_kapat 2
@@ -386,8 +386,8 @@ done # }}}
               sp 'Şimdi askıya al' \
               sa 'Girilecek saatte kapat' \
               st 'Girilecek saatte askıya al' \
-              dk 'Girilecek dakika kadar sonra kapat' \
-              sd 'Girilecek dakika kadar sonra askıya al')
+              dk 'Girilecek dakika sonra kapat' \
+              sd 'Girilecek dakika sonra askıya al')
       (( $? == 1 )) && exit 1
 
       if [[ $donus = yb ]]
@@ -439,8 +439,8 @@ done # }}}
               sp 'Şimdi askıya al' \
               sa 'Girilecek saatte kapat' \
               st 'Girilecek saatte askıya al' \
-              dk 'Girilecek dakika kadar sonra kapat' \
-              sd 'Girilecek dakika kadar sonra askıya al')
+              dk 'Girilecek dakika sonra kapat' \
+              sd 'Girilecek dakika sonra askıya al')
       (( $? == 1 )) && exit 1
 
       if [[ $donus = yb ]]
@@ -634,7 +634,7 @@ done # }}}
               printf '%d\n' "$c"; sleep 1
             }
           ) | yad --progress --percentage=20 --title="${AD^}" \
-                --text "5 saniye sonra bilgisayar yeniden başlatılacak." --auto-close \
+                --text "5 saniye sonra sistem yeniden başlatılacak." --auto-close \
                 --window-icon=gnome-shutdown --sticky --center \
                 --button='İptal:1'
               (( $? == 1 )) && exit 1
@@ -646,7 +646,7 @@ done # }}}
               printf '%d\n' "$c"; sleep 1
             }
           ) | zenity --progress --percentage=20 --title="${AD^}" \
-                --text "5 saniye sonra bilgisayar yeniden başlatılacak." \
+                --text "5 saniye sonra sistem yeniden başlatılacak." \
                 --window-icon=gnome-shutdown --auto-close
               (( $? == 1 )) && exit 1
       fi
@@ -948,18 +948,18 @@ done # }}}
       if (( arayuz == 1 ))
       then
           kdialog --title="${AD^}" --icon=system-shutdown \
-            --msgbox "$(printf 'Bilgisayarınızın kapatılacağı saat: %s %s' "$girilen_saat" "${gun}")" &
+            --msgbox "$(printf 'Sisteminizin kapatılacağı saat: %s %s' "$girilen_saat" "${gun}")" &
       elif (( arayuz == 2 ))
       then
             yad --title="${AD^}" --timeout=10 --window-icon=gnome-shutdown --sticky --center --fixed \
-            --text "$(printf 'Bilgisayarınızın kapatılacağı saat: %s %s' "$girilen_saat" "${gun}")" &
+            --text "$(printf 'Sisteminizin kapatılacağı saat: %s %s' "$girilen_saat" "${gun}")" &
       elif (( arayuz == 3 ))
       then
           zenity --title="${AD^}" --info --timeout=10 --window-icon=gnome-shutdown \
-            --text "$(printf 'Bilgisayarınızın kapatılacağı saat: %s %s' "$girilen_saat" "${gun}")" &
+            --text "$(printf 'Sisteminizin kapatılacağı saat: %s %s' "$girilen_saat" "${gun}")" &
       fi
   else
-      printf '%s: bilgisayarınızın kapatılacağı saat: %s %s\a\n' "${AD}" "$girilen_saat" "${gun}"
+      printf '%s: sisteminizin kapatılacağı saat: %s %s\a\n' "${AD}" "$girilen_saat" "${gun}"
   fi
   sleep $bekle; kapat_penceresi
 } # }}}
@@ -994,7 +994,7 @@ done # }}}
     else
         printf '%s: %s\n%s\n' "$AD" \
           "girilen saat ya da saat biçimi hatalı." \
-          "Saati ss:dd biçiminde giriniz"
+          "Saati ss:dd biçiminde giriniz."
         exit 1
     fi
   }
