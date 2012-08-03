@@ -335,7 +335,6 @@ done # }}}
               sa 'Girilecek saatte kapat' off \
               st 'Girilecek saatte askıya al' off \
               dk 'Girilecek dakika sonra kapat' off \
-              st 'Girilecek saatte askıya al' off \
               sd 'Girilecek dakika sonra askıya al.' off)
       (( $? == 1 )) && exit 1
 
