@@ -1,11 +1,11 @@
 #!/bin/bash
 # Copyright 2010-2012 Fatih Bostancı <faopera@gmail.com>
 # GPLv3
-# v1.7.0
+# v1.7.1
 
 ### Değişkenler - Giriş {{{
 AD="${0##*/}"
-SURUM=1.7.0
+SURUM=1.7.1
 
 ARAYUZ=0
 YENIDEN_BASLAT=0
@@ -196,7 +196,7 @@ function kapat_penceresi() {
         }
       ) | yad --progress --percentage=5 --title="${AD^}" \
             --text "20 saniye sonra sistem kapatılacak." --auto-close \
-            --window-icon=gnome-shutdown --sticky --center \
+            --window-icon=gnome-shutdown --sticky --center --on-top \
             --button='Şimdi kapat:0' --button='İptal:1'
           (( $? == 0 )) && bilg_kapat 2 || exit 1
   elif test -x "$(which zenity 2>/dev/null)"
@@ -247,7 +247,7 @@ function askiya_al_penceresi() {
         }
       ) | yad --progress --percentage=5 --title="${AD^}" \
             --text "20 saniye sonra sistem askıya alınacak." --auto-close \
-            --window-icon=gnome-shutdown --sticky --center \
+            --window-icon=gnome-shutdown --sticky --center --on-top \
             --button='Şimdi askıya al:0' --button='İptal:1'
           (( $? == 0 )) && bilg_kapat 3 || exit 1
   elif test -x "$(which zenity 2>/dev/null)"
@@ -378,9 +378,9 @@ done # }}}
       donus=$(yad --title="${AD^}" --text='İşlemi seçiniz:' \
               --window-icon=gnome-shutdown \
               --sticky --center \
-              --width=340 --height=300 \
+              --width=340 --height=300 --no-headers \
               --list --hide-column=1 --print-column=1 \
-              --column=' ' --column='Seçenekler' --separator='' \
+              --column=' ' --column=' ' --separator='' \
               yb 'Şimdi yeniden başlat' \
               kt 'Şimdi kapat' \
               sp 'Şimdi askıya al' \
