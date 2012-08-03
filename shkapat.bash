@@ -911,7 +911,7 @@ done # }}}
   dakika=$(cut -d':' -f2 <<<$girilen_saat | sed 's:^[0]*::')
 
   [[ -z $dakika ]] && dakika=0
-  [[ -z $saat   ]] && saat=0
+  [[ -z $saat   ]] && saat='-1'
 
   [[ $saat -gt 23 ]] && {
     if (( ARAYUZ ))
@@ -1002,7 +1002,7 @@ done # }}}
   dakika=$(cut -d':' -f2 <<<$aski_girilen_saat | sed 's:^[0]*::')
 
   [[ -z $dakika ]] && dakika=0
-  [[ -z $saat   ]] && saat=0
+  [[ -z $saat   ]] && saat='-1'
 
   [[ $saat -gt 23 ]] && {
     if (( ARAYUZ ))
