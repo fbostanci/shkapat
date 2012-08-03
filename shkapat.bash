@@ -3,7 +3,7 @@
 # GPLv3
 # v1.7.0
 
-### Değişkenler- Giriş {{{{
+### Değişkenler - Giriş {{{
 AD="${0##*/}"
 SURUM=1.7.0
 
@@ -39,7 +39,7 @@ function pid_denetle() {
         ileti="$(printf '%s\n%s' \
                    "Başka bir zamanlanmış görev mevcut. pid=${pid}" \
                    'Şimdi iptal etmek ister misiniz?')"
-        if  (( arayuz == 1 ))
+        if (( arayuz == 1 ))
         then
             kdialog --title="${AD^}" --icon=system-shutdown --warningyesno "${ileti}"
             case $? in
@@ -198,7 +198,7 @@ function kapat_penceresi() {
             --text "20 saniye sonra bilgisayar kapatılacak." --auto-close \
             --window-icon=gnome-shutdown --sticky --center \
             --button='Şimdi kapat:0' --button='İptal:1'
-          (( $? == 1 )) &&  exit 1 || bilg_kapat 2
+          (( $? == 0 )) && bilg_kapat 2 || exit 1
   elif test -x "$(which zenity 2>/dev/null)"
   then
       (
@@ -209,7 +209,7 @@ function kapat_penceresi() {
       ) | zenity --progress --percentage=5 --title="${AD^}" \
             --text "20 saniye sonra bilgisayar kapatılacak." \
             --window-icon=gnome-shutdown --auto-close
-          (( $? == 1 )) &&  exit 1 || bilg_kapat 2
+          (( $? == 0 )) && bilg_kapat 2 || exit 1
   else
         for ((c=20; c>0; c--))
         {
@@ -249,7 +249,7 @@ function askiya_al_penceresi() {
             --text "20 saniye sonra sistem askıya alınacak." --auto-close \
             --window-icon=gnome-shutdown --sticky --center \
             --button='Şimdi askıya al:0' --button='İptal:1'
-          (( $? == 1 )) &&  exit 1 || bilg_kapat 3
+          (( $? == 0 )) && bilg_kapat 3 || exit 1
   elif test -x "$(which zenity 2>/dev/null)"
   then
       (
@@ -260,7 +260,7 @@ function askiya_al_penceresi() {
       ) | zenity --progress --percentage=5 --title="${AD^}" \
             --text "20 saniye sonra sistem askıya alınacak." \
             --window-icon=gnome-shutdown --auto-close
-          (( $? == 1 )) &&  exit 1 || bilg_kapat 3
+          (( $? == 0 )) && bilg_kapat 3 || exit 1
   else
         for ((c=20; c>0; c--))
         {
@@ -562,8 +562,8 @@ done # }}}
       then
           DAKIKA_ASKIYA_AL=1
           aski_girilen_dakika=$(yad --title="${AD^}" --text 'Dakikayı giriniz [d]' \
-                           --entry --entry-text="$(date -d +%-M)" \
-                           --sticky --center --fixed --window-icon=gnome-shutdown)
+                                --entry --entry-text="$(date -d +%-M)" \
+                                --sticky --center --fixed --window-icon=gnome-shutdown)
           (( $? == 1 )) && exit 1
       fi
   elif test -x "$(which zenity 2>/dev/null)"
@@ -638,7 +638,7 @@ done # }}}
                 --text "5 saniye sonra bilgisayar yeniden başlatılacak." --auto-close \
                 --window-icon=gnome-shutdown --sticky --center \
                 --button='İptal:1'
-              (( $? == 1 )) &&  exit 1
+              (( $? == 1 )) && exit 1
       elif (( arayuz == 3 ))
       then
           (
@@ -649,7 +649,7 @@ done # }}}
           ) | zenity --progress --percentage=20 --title="${AD^}" \
                 --text "5 saniye sonra bilgisayar yeniden başlatılacak." \
                 --window-icon=gnome-shutdown --auto-close
-              (( $? == 1 )) &&  exit 1
+              (( $? == 1 )) && exit 1
       fi
   else
       for ((i=3; i>0; i--))
@@ -690,7 +690,7 @@ done # }}}
                 --text "5 saniye sonra sistem askıya alınacak." --auto-close \
                 --window-icon=gnome-shutdown --sticky --center \
                 --button='İptal:1'
-              (( $? == 1 )) &&  exit 1
+              (( $? == 1 )) && exit 1
       elif (( arayuz == 3 ))
       then
           (
@@ -701,7 +701,7 @@ done # }}}
           ) | zenity --progress --percentage=20 --title="${AD^}" \
                 --text "5 saniye sonra sistem askıya alınacak." \
                 --window-icon=gnome-shutdown --auto-close
-              (( $? == 1 )) &&  exit 1
+              (( $? == 1 )) && exit 1
       fi
   else
       for ((i=3; i>0; i--))
@@ -742,7 +742,7 @@ done # }}}
                 --text "5 saniye sonra sistem kapatılacak" --auto-close \
                 --window-icon=gnome-shutdown --sticky --center \
                 --button='İptal:1'
-              (( $? == 1 )) &&  exit 1
+              (( $? == 1 )) && exit 1
       elif (( arayuz == 3 ))
       then
           (
@@ -753,7 +753,7 @@ done # }}}
           ) | zenity --progress --percentage=20 --title="${AD^}" \
                 --text "5 saniye sonra sistem kapatılacak" \
                 --window-icon=gnome-shutdown --auto-close
-              (( $? == 1 )) &&  exit 1
+              (( $? == 1 )) && exit 1
       fi
   else
       for ((i=3; i>0; i--))
