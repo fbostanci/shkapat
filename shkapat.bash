@@ -125,11 +125,11 @@ function bilgi() {
         '    Bilgisayarı hemen askıya alır.' \
         '-s, --saat <ss:dd>' \
         '    Girilen saatte bilgisayarı kapatır.' \
-        '--as, --ask[ıi]ya-al-saat' \
+        '--as, --ask[ıi]ya-al-saat <ss:dd>' \
         '    Girilen saatte sistemi askıya alır.' \
         '-d, --dakika <dakika>' \
         '    Girilen dakika kadar sonra bilgisayarı kapatır.' \
-        '--ad, --ask[ıiya]-al-dakika' \
+        '--ad, --ask[ıiya]-al-dakika <dakika>' \
         '    Girilen dakika kadar sonra sistemi askıya alır.' \
         '--arayüz, --arayuz, --gui' \
         '    Arayüz uygulamasını başlatır.' \
