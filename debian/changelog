@@ -1,3 +1,10 @@
+shkapat (1.7.1-1~distroguide~precise) precise; urgency=low
+
+  * Yeni Yad secenekleri eklendi.
+  * Bazi kucuk hatalar duzeltildi.
+
+ -- Fatih Bostanci <faopera@gmail.com> Sat, 04 Aug 2012 18:58:50 +0300
+
 shkapat (1.7.0-1~distroguide~precise) precise; urgency=low
 
   * askiya alma destegi eklendi.
