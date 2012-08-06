@@ -1,11 +1,11 @@
 #!/bin/bash
 # Copyright 2010-2012 Fatih Bostancı <faopera@gmail.com>
 # GPLv3
-# v1.7.1
+# v1.7.2
 
 ### Değişkenler - Giriş {{{
 AD="${0##*/}"
-SURUM=1.7.1
+SURUM=1.7.2
 
 ARAYUZ=0
 YENIDEN_BASLAT=0
@@ -44,7 +44,7 @@ function pid_denetle() {
             kdialog --title="${AD^}" --icon=system-shutdown --warningyesno "${ileti}"
             case $? in
               0)
-                kill -9 ${pid} &>/dev/null && \
+                kill -9 ${pid} &>/dev/null &&
                 kdialog --title="${AD^}" --icon=system-shutdown \
                   --msgbox "Görev iptal edildi."
                 exit 0 ;;
@@ -57,7 +57,7 @@ function pid_denetle() {
               --text "${ileti}"
             case $? in
               0)
-                kill -9 ${pid} &>/dev/null && \
+                kill -9 ${pid} &>/dev/null &&
                 yad --title="${AD^}" --timeout=10 --window-icon=gnome-shutdown --sticky --center --fixed \
                   --text "Görev iptal edildi." --on-top
                 exit 0 ;;
@@ -70,7 +70,7 @@ function pid_denetle() {
               --text "${ileti}"
             case $? in
               0)
-                kill -9 ${pid} &>/dev/null && \
+                kill -9 ${pid} &>/dev/null &&
                 zenity --title="${AD^}" --info --timeout=10 --window-icon=gnome-shutdown \
                   --text "Görev iptal edildi."
                 exit 0 ;;
@@ -81,16 +81,16 @@ function pid_denetle() {
     else
         printf '%s: %s\n%s\n' "${AD^}" \
           "Başka bir zamanlanmış görev mevcut. pid=${pid}" \
-          'Şimdi iptal etmek ister misiniz?'
+          'Şimdi iptal etmek ister misiniz [E/h]?'
 
-       read -n 1 yanit
+       read -n1 yanit
        case ${yanit} in
          [eEyY])
-           kill -9 ${pid} &>/dev/null
-           printf '%s: %s\n' "${AD^}" \
+           kill -9 ${pid} &>/dev/null &&
+           printf '\n%s: %s\n' "${AD^}" \
              'Görev iptal edildi.'
            exit 0 ;;
-         [hHnN])
+         *)
            exit 1 ;;
        esac
     fi
