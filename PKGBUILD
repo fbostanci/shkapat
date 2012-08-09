@@ -1,7 +1,7 @@
 # Maintainer: Fatih Bostancı <faopera@gmail.com>
 
 pkgname=shkapat
-pkgver=1.7.0
+pkgver=1.7.1
 pkgrel=1
 pkgdesc="Süre ayarlı bilgisayar kapatıcı"
 license=('GPL3')
@@ -10,18 +10,11 @@ depends=()
 url="https://gitorious.org/shkapat"
 makedepends=('git')
 install=${pkgname}.install
-_gitroot='git://gitorious.org/shkapat/shkapat.git'
-_gitname='shkapat'
+source=("https://launchpad.net/~fbostanci/+archive/distroguide/+files/shkapat_${pkgver}-${pkgrel}%7Edistroguide%7Eprecise.tar.gz")
+sha256sums=('2068ff0b23973effc903e3b19cb421c4ebfb18570ec5d05619832a5545d38f2f')
 
 build() {
-  msg "Gitorious GIT sunucusuna bağlanılıyor..."
-
-  if [ -d "${srcdir}/${_gitname}" ]
-  then
-       cd ${_gitname} && git pull origin
-  else
-       git clone "${_gitroot}" && cd ${_gitname}
-  fi
+  cd "${srcdir}"/${pkgname}
 
   #${EDITOR:-${vim:-vi}} Makefile
   msg "make başlatılıyor..."

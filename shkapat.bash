@@ -906,7 +906,7 @@ done # }}}
     else
         printf '%s: %s\n%s\n' "$AD" \
           "girilen saat ya da saat biçimi hatalı." \
-          "Saati ss:dd biçiminde giriniz"
+          "Saati ss:dd biçiminde giriniz."
         exit 1
     fi
   }
