@@ -653,7 +653,8 @@ done # }}}
   else
       for ((i=3; i>0; i--))
       {
-        printf "%s\a\t" "$i"
+        printf "\a%d%s\r" "$i" \
+          " saniye sonra sistem yeniden başlatılacak."
         sleep 1
       }
       printf '\n\n%s\a\n' 'Yeniden başlatılıyor...'
@@ -705,7 +706,8 @@ done # }}}
   else
       for ((i=3; i>0; i--))
       {
-        printf "%s\a\t" "$i"
+        printf "\a%d%s\r" "$i" \
+          " saniye sonra sistem askıya alınacak."
         sleep 1
       }
       printf '\n\n%s\a\n' 'Askıya alınıyor...'
@@ -757,7 +759,8 @@ done # }}}
   else
       for ((i=3; i>0; i--))
       {
-        printf "%s\a\t" "$i"
+        printf "\a%d%s\r" "$i" \
+          " saniye sonra sistem kapatılacak."
         sleep 1
       }
       printf '\n\n%s\a\n' 'Kapatılıyor...'
