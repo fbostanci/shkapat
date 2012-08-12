@@ -1,11 +1,11 @@
 #!/bin/bash
 # Copyright 2010-2012 Fatih Bostancı <faopera@gmail.com>
 # GPLv3
-# v1.7.3
+# v1.8.0
 
 ### Değişkenler - Giriş {{{
 AD="${0##*/}"
-SURUM=1.7.3
+SURUM=1.8.0
 
 ARAYUZ=0
 YENIDEN_BASLAT=0
@@ -15,6 +15,8 @@ SAAT_ASKIYA_AL=0
 DAKIKA_ASKIYA_AL=0
 SAAT=0
 DAKIKA=0
+UCBIRIM=0
+DIALOG=0
 UNITY=0
 HATA_VER=0
 # }}}
@@ -114,7 +116,7 @@ function bilgi() {
   then
       printf_bicim='\n\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s'
       printf_bicim+='\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n'
-      printf_bicim+='%s\n\n%s\n%s\n\n'
+      printf_bicim+='%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n\n'
       printf "${printf_bicim}" \
         "${AD} [seçenek]" \
         '-k,--kapat' \
@@ -133,12 +135,17 @@ function bilgi() {
         '    Girilen dakika kadar sonra sistemi askıya alır.' \
         '--aray[uü]z --gui' \
         '    Arayüz uygulamasını başlatır.' \
+        '--cli, --u[cç]birim, --terminal' \
+        '    Uçbirimden seçke yardımı ile kullanımı başlatır.' \
+        '--dialog' \
+        '    Uçbirimden dialog uygulaması ile pencereli kullanımı başlatır.' \
         '--unity [saat|dakika|yba[sş]lat|kapat|ask[ıi]ya-al|ask[ıi]ya-al-saat|ask[ıi]ya-al-dakika]' \
         '    Unity seçkesi için özel kullanım kipi' \
         '-v, --sürüm, --surum, --version' \
         '    Sürüm bilgisini gösterir.' \
         '-h, --yardım, --yardim' \
-        '    Bu yardım çıktısını görüntüler.'
+        '    Bu yardım çıktısını görüntüler.' \
+        'Çıkmak için q tuşuna basınız.' | less -R
   fi
 } # }}}
 
@@ -276,7 +283,7 @@ function askiya_al_penceresi() {
 uzun_secenekler='saat:,dakika:,ybaşlat,ybaslat,kapat,help,yardım,yardim,'
 uzun_secenekler+='surum,sürüm,version,gui,arayuz,arayüz,unity:,askiya-al,'
 uzun_secenekler+='askıya-al,askıya-al-saat:,askiya-al-saat:,askıya-al-dakika:,'
-uzun_secenekler+='askiya-al-dakika:,as:,ad:'
+uzun_secenekler+='askiya-al-dakika:,as:,ad:,cli,ucbirim,uçbirim,terminal,dialog'
 
 DES=$(getopt -n "${AD}" -o 'as:d:ykhv' -l "${uzun_secenekler}" -- "$@")
 (( $? == 1 )) && exit 1
@@ -313,6 +320,11 @@ do
     -h|--yard[ıi]m)
       bilgi y
       exit 0 ;;
+    --cli|--u[cç]birim|--terminal)
+      UCBIRIM=1 ;;
+    --dialog)
+      [[ -x "$(which dialog 2>/dev/null)" ]] &&
+        DIALOG=1 || { printf 'dialog uygulaması kurulu değil.\n'; exit 1; } ;;
     --gui|--aray[uü]z)
       ARAYUZ=1 ;;
     --)
@@ -481,6 +493,130 @@ done # }}}
                                 --window-icon=gnome-shutdown)
           (( $? == 1 )) && exit 1
       fi
+  fi
+} # }}}
+
+### UCBIRIM yönetimi {{{
+(( UCBIRIM )) && {
+  PS3='İşlem numarasını giriniz: '
+  islem_dizisi=( 'Şimdi yeniden başlat'
+                 'Şimdi kapat'
+                 'Şimdi askıya al'
+                 'Girilecek saatte kapat'
+                 'Girilecek saatte askıya al'
+                 'Girilecek dakika sonra kapat'
+                 'Girilecek dakika sonra askıya al'
+                 'Seçkeden çık'
+               )
+
+  select islem in "${islem_dizisi[@]}"
+  do
+    if [[ ${islem} = ${islem_dizisi[0]} ]]
+    then
+        YENIDEN_BASLAT=1
+        break
+    elif [[ ${islem} = ${islem_dizisi[1]} ]]
+    then
+        SIMDI_KAPAT=1
+        break
+    elif [[ ${islem} = ${islem_dizisi[2]} ]]
+    then
+        SIMDI_ASKIYA_AL=1
+        break
+    elif [[ ${islem} = ${islem_dizisi[3]} ]]
+    then
+        read -p 'Kapatılma saatini giriniz <ss:dd> : ' -t 15 girilen_saat || exit 1
+        SAAT=1
+        break
+    elif [[ ${islem} = ${islem_dizisi[4]} ]]
+    then
+        read -p 'Askıya alınma saatini giriniz <ss:dd> : ' -t 15 aski_girilen_saat || exit 1
+        SAAT_ASKIYA_AL=1
+        break
+    elif [[ ${islem} = ${islem_dizisi[5]} ]]
+    then
+        read -p 'Kapatılma için dakika giriniz <dakika> : ' -t 15 girilen_dakika || exit 1
+        DAKIKA=1
+        break
+    elif [[ ${islem} = ${islem_dizisi[6]} ]]
+    then
+        read -p 'Askıya alınma için dakika giriniz <dakika> : ' -t 15 aski_girilen_dakika || exit 1
+        DAKIKA_ASKIYA_AL=1
+        break
+    elif [[ ${islem} = ${islem_dizisi[7]} ]]
+    then
+        exit 0
+    else
+        printf 'Geçersiz istek\n'
+    fi
+  done
+} # }}}
+
+### DIALOG yönetimi {{{
+(( DIALOG )) && {
+  dialog --backtitle "${AD^} $SURUM" \
+    --ok-label 'Onayla' --cancel-label 'Çık' \
+    --title "İşlemi seçiniz:" "$@" \
+    --radiolist 'Uygulamak istediğiniz işlemi boşluk(space) tuşuyla\nseçip onaylayınız.' 20 61 7 \
+    'Şimdi yeniden başlat' '' on \
+    'Şimdi kapat' '' off \
+    'Şimdi askıya al' '' off \
+    'Girilecek saatte kapat' '' off \
+    'Girilecek saatte askıya al' '' off \
+    'Girilecek dakika sonra kapat' '' off \
+    'Girilecek dakika sonra askıya al' '' off 2>/tmp/${AD}-dialog-islem
+  (( $? == 0 )) && islem="$( < /tmp/${AD}-dialog-islem)" || exit 1
+  rm -f /tmp/${AD}-dialog-islem &>/dev/null
+
+  if [[ ${islem} = 'Şimdi yeniden başlat' ]]
+  then
+      YENIDEN_BASLAT=1
+  elif [[ ${islem} = 'Şimdi kapat' ]]
+  then
+      SIMDI_KAPAT=1
+  elif [[ ${islem} = 'Şimdi askıya al' ]]
+  then
+      SIMDI_ASKIYA_AL=1
+  elif [[ ${islem} = 'Girilecek saatte kapat' ]]
+  then
+      dialog --backtitle "${AD^} $SURUM" \
+        --ok-label 'Onayla' --cancel-label 'Çık' \
+        --title "İşlemi seçiniz:" \
+        --inputbox "$@" \
+        "Kapatılma saatini giriniz <ss:dd> :" 0 0 2>/tmp/${AD}-dialog-islem
+      (( $? == 0 )) && girilen_saat="$( < /tmp/${AD}-dialog-islem)" || exit 1
+      rm -f /tmp/${AD}-dialog-islem &>/dev/null
+      SAAT=1
+  elif [[ ${islem} = 'Girilecek saatte askıya al' ]]
+  then
+      dialog --backtitle "${AD^} $SURUM" \
+        --ok-label 'Onayla' --cancel-label 'Çık' \
+        --title "İşlemi seçiniz:" \
+        --inputbox "$@" \
+        "Askıya alınma saatini giriniz <ss:dd> :" 0 0 2>/tmp/${AD}-dialog-islem
+      (( $? == 0 )) && aski_girilen_saat="$( < /tmp/${AD}-dialog-islem)" || exit 1
+      rm -f /tmp/${AD}-dialog-islem &>/dev/null
+      SAAT_ASKIYA_AL=1
+  elif [[ ${islem} = 'Girilecek dakika sonra kapat' ]]
+  then
+      dialog --backtitle "${AD^} $SURUM" \
+        --ok-label 'Onayla' --cancel-label 'Çık' \
+        --title "İşlemi seçiniz:" \
+        --inputbox "$@" \
+        "Kapatılma için dakika giriniz <dakika> :" 0 0 2>/tmp/${AD}-dialog-islem
+      (( $? == 0 )) && girilen_dakika="$( < /tmp/${AD}-dialog-islem)" || exit 1
+      rm -f /tmp/${AD}-dialog-islem &>/dev/null
+      DAKIKA=1
+  elif [[ ${islem} = 'Girilecek dakika sonra askıya al' ]]
+  then
+      dialog --backtitle "${AD^} $SURUM" \
+        --ok-label 'Onayla' --cancel-label 'Çık' \
+        --title "İşlemi seçiniz:" \
+        --inputbox "$@" \
+        "Askıya alınma için dakika giriniz <dakika> :" 0 0 2>/tmp/${AD}-dialog-islem
+      (( $? == 0 )) && aski_girilen_dakika="$( < /tmp/${AD}-dialog-islem)" || exit 1
+      rm -f /tmp/${AD}-dialog-islem &>/dev/null
+      DAKIKA_ASKIYA_AL=1
   fi
 } # }}}
 
