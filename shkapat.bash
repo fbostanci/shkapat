@@ -1,11 +1,11 @@
 #!/bin/bash
 # Copyright 2010-2012 Fatih Bostancı <faopera@gmail.com>
 # GPLv3
-# v1.7.2
+# v1.7.3
 
 ### Değişkenler - Giriş {{{
 AD="${0##*/}"
-SURUM=1.7.2
+SURUM=1.7.3
 
 ARAYUZ=0
 YENIDEN_BASLAT=0
@@ -164,8 +164,8 @@ function bilg_kapat() {
             /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.${istek}
      elif [[ $istek == 3 ]]
      then
-         dbus-send --system --print-reply --dest='org.freedesktop.UPower' \
-           /org/freedesktop/UPower org.freedesktop.UPower.Suspend
+          dbus-send --system --print-reply --dest='org.freedesktop.UPower' \
+            /org/freedesktop/UPower org.freedesktop.UPower.Suspend
      fi
   fi
 } # }}}
@@ -913,8 +913,9 @@ done # }}}
   saat=$(cut -d':' -f1 <<<$girilen_saat | sed 's:^[0]*::')
   dakika=$(cut -d':' -f2 <<<$girilen_saat | sed 's:^[0]*::')
 
-  [[ -z $dakika ]] && dakika=0
-  [[ -z $saat   ]] && saat='-1'
+  [[ -z $dakika ]] && dakika=00
+  [[ -z $saat   ]] && saat=00
+  sonuc=$(echo "$saat$dakika $(date +%-H%-M)" | awk '{if($1 > $2) print 1; else if($1 < $2) print 2; else print 0}')
 
   [[ $saat -gt 23 ]] && {
     if (( ARAYUZ ))
@@ -942,10 +943,10 @@ done # }}}
     fi
   }
 
-  [[ $saat$dakika -gt $(date +%-H%-M) ]] && { bekle=$(($(date -d "$girilen_saat" +%s) - $(date +%s))); gun=''; } || \
+  (( sonuc == 1 )) && { bekle=$(($(date -d "$girilen_saat" +%s) - $(date +%s))); gun=''; } || \
     { bekle=$((86400 - $(date +%s) + $(date -d "$girilen_saat" +%s))); gun='(Yarın)'; }
 
-  (( (bekle-20) > 0 )) && bekle=$((bekle-20))
+  (( (bekle-20) > 0 )) && bekle=$((bekle-20)) || kapat_penceresi
   if (( ARAYUZ ))
   then
       if (( arayuz == 1 ))
@@ -954,7 +955,7 @@ done # }}}
             --msgbox "$(printf 'Sisteminizin kapatılacağı saat: %s %s' "$girilen_saat" "${gun}")" &
       elif (( arayuz == 2 ))
       then
-            yad --title="${AD^}" --timeout=10 --window-icon=gnome-shutdown --sticky --center --fixed \
+          yad --title="${AD^}" --timeout=10 --window-icon=gnome-shutdown --sticky --center --fixed \
             --text "$(printf 'Sisteminizin kapatılacağı saat: %s %s' "$girilen_saat" "${gun}")" &
       elif (( arayuz == 3 ))
       then
@@ -1004,8 +1005,9 @@ done # }}}
   saat=$(cut -d':' -f1 <<<$aski_girilen_saat | sed 's:^[0]*::')
   dakika=$(cut -d':' -f2 <<<$aski_girilen_saat | sed 's:^[0]*::')
 
-  [[ -z $dakika ]] && dakika=0
-  [[ -z $saat   ]] && saat='-1'
+  [[ -z $dakika ]] && dakika=00
+  [[ -z $saat   ]] && saat=00
+  sonuc=$(echo "$saat$dakika $(date +%-H%-M)" | awk '{if($1 > $2) print 1; else if($1 < $2) print 2; else print 0}')
 
   [[ $saat -gt 23 ]] && {
     if (( ARAYUZ ))
@@ -1033,10 +1035,10 @@ done # }}}
     fi
   }
 
-  [[ $saat$dakika -gt $(date +%-H%-M) ]] && { bekle=$(($(date -d "$aski_girilen_saat" +%s) - $(date +%s))); gun=''; } || \
+  (( sonuc == 1 )) && { bekle=$(($(date -d "$aski_girilen_saat" +%s) - $(date +%s))); gun=''; } || \
     { bekle=$((86400 - $(date +%s) + $(date -d "$aski_girilen_saat" +%s))); gun='(Yarın)'; }
 
-  (( (bekle-20) > 0 )) && bekle=$((bekle-20))
+  (( (bekle-20) > 0 )) && bekle=$((bekle-20)) || askiya_al_penceresi
   if (( ARAYUZ ))
   then
       if (( arayuz == 1 ))
