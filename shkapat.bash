@@ -1041,9 +1041,9 @@ done # }}}
     fi
   }
   export $(awk -F':' '{printf "saat=%s\ndakika=%s", $1,$2;}' <<<$girilen_saat)
-  sonuc=$(echo "$saat$dakika $(date +%H%M)" | awk '{if($1 > $2) print 1; else if($1 < $2) print 2; else print 0}')
+  sonuc=$(echo "$saat$dakika $(date +%H%M)" | awk '{if($1 > $2) print(1); else if($1 < $2) print(2); else print(0);}')
 
-  [[ $(echo "$saat 23" | awk '{if($1 > $2) print 1; else if($1 < $2) print 2; else print 0}') == 1  ]] && {
+  [[ $(echo "$saat 23" | awk '{if($1 > $2) print(1); else if($1 < $2) print(2); else print(0);}') == 1  ]] && {
     if (( ARAYUZ ))
     then
         if (( arayuz == 1 ))
@@ -1125,9 +1125,9 @@ done # }}}
     fi
   }
   export $(awk -F':' '{printf "saat=%s\ndakika=%s", $1,$2;}' <<<$aski_girilen_saat)
-  sonuc=$(echo "$saat$dakika $(date +%H%M)" | awk '{if($1 > $2) print 1; else if($1 < $2) print 2; else print 0}')
+  sonuc=$(echo "$saat$dakika $(date +%H%M)" | awk '{if($1 > $2) print(1); else if($1 < $2) print(2); else print(0);}')
 
-  [[ $(echo "$saat 23" | awk '{if($1 > $2) print 1; else if($1 < $2) print 2; else print 0}') == 1  ]] && {
+  [[ $(echo "$saat 23" | awk '{if($1 > $2) print(1); else if($1 < $2) print(2); else print(0);}') == 1  ]] && {
     if (( ARAYUZ ))
     then
         if (( arayuz == 1 ))
