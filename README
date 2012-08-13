@@ -1,4 +1,4 @@
-Son Güncelleme: Mon, 13 Aug 2012 00:10:14 +0300
+Son Güncelleme: Mon, 13 Aug 2012 14:04:19 +0300
 
 Shkapat 1.8.0 Süre ayarlı bilgisayar kapatıcı.
 
@@ -6,7 +6,7 @@ Shkapat 1.8.0 Süre ayarlı bilgisayar kapatıcı.
 ###
 HAKKINDA
 
-Shkapat, normal şekilde sisteminizi kapatma, yeniden başlatma ve
+Shkapat normal şekilde sisteminizi kapatma, yeniden başlatma ve
 askıya alma yanında saat ya da dakika olarak gireceğiniz zamanda
 sisteminizi kapatmanızı/askıya almanızı sağlar.
 
@@ -19,6 +19,9 @@ BAĞIMLILIKLAR
 Arayüz kullanımı için ek olarak:
   * KDialog, YAD ya da Zenity'den herhangi birinin
     kurulu olması gerekmektedir.
+
+Uçbirimden dialog pencereleri ile kullanım için ek olarak:
+  * dialog uygulamasının kurulu olması gerekmektedir.
 
 ###
 KURULUM ve KALDIRMA
