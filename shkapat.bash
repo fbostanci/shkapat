@@ -323,7 +323,7 @@ do
     --cli|--u[cç]birim|--terminal)
       UCBIRIM=1 ;;
     --dialog)
-      [[ ! -x "$(which dialog 2>/dev/null)" ]] &&
+      [[ -x "$(which dialog 2>/dev/null)" ]] &&
         DIALOG=1 || { printf 'dialog uygulaması kurulu değil.\n'; exit 1; } ;;
     --gui|--aray[uü]z)
       ARAYUZ=1 ;;
