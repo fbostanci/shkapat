@@ -1,7 +1,7 @@
 # Maintainer: Fatih Bostancı <faopera@gmail.com>
 
 pkgname=shkapat
-pkgver=1.7.1
+pkgver=1.8.0
 pkgrel=1
 pkgdesc="Süre ayarlı bilgisayar kapatıcı"
 license=('GPL3')
@@ -10,7 +10,7 @@ depends=()
 url="https://gitorious.org/shkapat"
 install=${pkgname}.install
 source=("https://launchpad.net/~fbostanci/+archive/distroguide/+files/shkapat_${pkgver}-${pkgrel}%7Edistroguide%7Eprecise.tar.gz")
-sha256sums=('2068ff0b23973effc903e3b19cb421c4ebfb18570ec5d05619832a5545d38f2f')
+sha256sums=('25017532881ff1f0b6d34135f06fc1c3c8a5c42bebc3416e7f6eeb62361fa4bd')
 
 build() {
   cd "${srcdir}"/${pkgname}
