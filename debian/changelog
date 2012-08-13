@@ -1,3 +1,11 @@
+shkapat (1.8.0-1~distroguide~precise) precise; urgency=low
+
+  * Ucbirimden kullanım icin dialog ve secke secenekleri eklendi.
+  * Saat 00:xx icin olusan hata cozuldu.
+  * Kucuk kod duzenlemeleri.
+
+ -- Fatih Bostanci <faopera@gmail.com> Mon, 13 Aug 2012 00:10:14 +0300
+
 shkapat (1.7.1-1~distroguide~precise) precise; urgency=low
 
   * Yeni Yad secenekleri eklendi.

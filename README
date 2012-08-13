@@ -1,19 +1,20 @@
-Son Güncelleme: Wed, 01 Aug 2012 13:19:36 +0300
+Son Güncelleme: Mon, 13 Aug 2012 00:10:14 +0300
 
-Shkapat 1.6.0 Süre ayarlı bilgisayar kapatıcı.
+Shkapat 1.8.0 Süre ayarlı bilgisayar kapatıcı.
 
 
 ###
 HAKKINDA
 
-Shkapat, normal şekilde sisteminizi kapatma ve yeniden başlatma
-yanında saat ya da dakika olarak gireceğiniz zamanda sisteminizi
- kapatmanızı sağlar.
+Shkapat, normal şekilde sisteminizi kapatma, yeniden başlatma ve
+askıya alma yanında saat ya da dakika olarak gireceğiniz zamanda
+sisteminizi kapatmanızı/askıya almanızı sağlar.
 
 ###
 BAĞIMLILIKLAR
   * bash
   * sed
+  * awk
 
 Arayüz kullanımı için ek olarak:
   * KDialog, YAD ya da Zenity'den herhangi birinin
@@ -52,7 +53,7 @@ komutunu girin.
 ###
 LİSANS
 
-Shkapat, GPL 3 ile lisanslanmıştır. Ayrıntılar için COPYING dosyasına bakın.
+Shkapat, GPL 3 ile lisanslanmıştır. Ayrıntılar için COPYING dosyasına bakınız.
 Shkapat simgesi, Oxygen Icon Theme Project'ten alınmıştır. (kullanılan simgenin adı: system-shutdown)
 
 Oxygen icon theme is dual licensed. You may copy it under the Creative Common Attribution-ShareAlike 3.0 License

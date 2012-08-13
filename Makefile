@@ -5,6 +5,12 @@
 #
 
 SHELL = /bin/bash
+surum = $(shell sed -n 's:^SURUM=::p' shkapat.bash)
+derleme = $(shell git log -1 --pretty=format:'%ad' --abbrev-commit --date=short 2>/dev/null | tr -d -- '-')
+
+ifeq "$(derleme)" ""
+	derleme = bilinmeyen
+endif
 
 all:
 	@echo "Nothing to make, use 'make install' to perform an installation."
@@ -31,4 +37,10 @@ uninstall:
 	@rm -f $(DESTDIR)/usr/share/icons/hicolor/128x128/apps/shkapat.png
 	@echo Shkapat sisteminizden kaldırıldı.
 
-.PHONY: all install uninstall
+dist:
+	@echo "Kaynak kod paketi oluşturuluyor. Lütfen bekleyiniz..."
+	@git archive master | xz > shkapat-$(surum).$(derleme).tar.xz
+	@echo "İşlem tamamlandı. ----------> shkapat-$(surum).$(derleme).tar.xz"
+
+
+.PHONY: all dist install uninstall

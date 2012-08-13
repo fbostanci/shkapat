@@ -101,12 +101,12 @@ function pid_denetle() {
 
 ### Bilgi fonksiyonu {{{
 function bilgi() {
-  local printf_bicim
+  local printf_bicim B=$(tput bold) R=$(tput sgr0)
 
   if [[ $1 = s ]]
   then
-      printf '%s\n\n%s\n\n%s\n%s\n%s\n%s\n' \
-        "${AD^} $SURUM" \
+      printf '%b\n\n%s\n\n%s\n%s\n%s\n%s\n' \
+        "${B}${AD^} $SURUM${R}" \
         'Copyright (c) 2010-2012 Fatih Bostancı'\
         'Bu uygulama bir özgür yazılımdır: yeniden dağıtabilirsiniz ve/veya'\
         'Özgür Yazılım Vakfı (FSF) tarafından yayımlanan (GPL)  Genel  kamu'\
@@ -114,38 +114,38 @@ function bilgi() {
         'uymak kaydıyla, üzerinde değişiklik yapabilirsiniz.'
   elif [[ $1 = y ]]
   then
-      printf_bicim='\n\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s'
-      printf_bicim+='\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n'
-      printf_bicim+='%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n\n%s\n\n'
+      printf_bicim='\n\n%b\n\n%b\n%s\n\n%b\n%s\n\n%b\n%s\n\n%b\n%s\n\n%b'
+      printf_bicim+='\n%s\n\n%b\n%s\n\n%b\n%s\n\n%b\n%s\n\n%b\n%s\n\n%b\n'
+      printf_bicim+='%s\n\n%b\n%s\n\n%b\n%s\n\n%b\n%s\n\n%b\n\n'
       printf "${printf_bicim}" \
-        "${AD} [seçenek]" \
-        '-k,--kapat' \
+        "${B}${AD} [seçenek]${R}" \
+        "${B}-k,--kapat${R}" \
         '    Sistemi hemen kapatır.' \
-        '-y, --yba[sş]lat' \
+        "${B}-y, --yba[sş]lat${R}" \
         '    Sistemi hemen yeniden başlatır.' \
-        '-a, --ask[ıi]ya-al' \
+        "${B}-a, --ask[ıi]ya-al${R}" \
         '    Sistemi hemen askıya alır.' \
-        '-s, --saat <ss:dd>' \
+        "${B}-s, --saat <ss:dd>${R}" \
         '    Girilen saatte sistemi kapatır.' \
-        '--as, --ask[ıi]ya-al-saat <ss:dd>' \
+        "${B}--as, --ask[ıi]ya-al-saat <ss:dd>${R}" \
         '    Girilen saatte sistemi askıya alır.' \
-        '-d, --dakika <dakika>' \
+        "${B}-d, --dakika <dakika>${R}"\
         '    Girilen dakika kadar sonra sistemi kapatır.' \
-        '--ad, --ask[ıiya]-al-dakika <dakika>' \
+        "${B}--ad, --ask[ıiya]-al-dakika <dakika>${R}" \
         '    Girilen dakika kadar sonra sistemi askıya alır.' \
-        '--aray[uü]z --gui' \
+        "${B}--aray[uü]z --gui${R}" \
         '    Arayüz uygulamasını başlatır.' \
-        '--cli, --u[cç]birim, --terminal' \
+        "${B}--cli, --u[cç]birim, --terminal${R}" \
         '    Uçbirimden seçke yardımı ile kullanımı başlatır.' \
-        '--dialog' \
+        "${B}--dialog${R}" \
         '    Uçbirimden dialog uygulaması ile pencereli kullanımı başlatır.' \
-        '--unity [saat|dakika|yba[sş]lat|kapat|ask[ıi]ya-al|ask[ıi]ya-al-saat|ask[ıi]ya-al-dakika]' \
+        "${B}--unity [saat|dakika|yba[sş]lat|kapat|ask[ıi]ya-al|ask[ıi]ya-al-saat|ask[ıi]ya-al-dakika]${R}" \
         '    Unity seçkesi için özel kullanım kipi' \
-        '-v, --sürüm, --surum, --version' \
+        "${B}-v, --sürüm, --surum, --version${R}" \
         '    Sürüm bilgisini gösterir.' \
-        '-h, --yardım, --yardim' \
+        "${B}-h, --yardım, --yardim${R}" \
         '    Bu yardım çıktısını görüntüler.' \
-        'Çıkmak için q tuşuna basınız.' | less -R
+        "${B}Çıkmak için q tuşuna basınız.${R}" | less -R
   fi
 } # }}}
 
@@ -323,7 +323,7 @@ do
     --cli|--u[cç]birim|--terminal)
       UCBIRIM=1 ;;
     --dialog)
-      [[ -x "$(which dialog 2>/dev/null)" ]] &&
+      [[ ! -x "$(which dialog 2>/dev/null)" ]] &&
         DIALOG=1 || { printf 'dialog uygulaması kurulu değil.\n'; exit 1; } ;;
     --gui|--aray[uü]z)
       ARAYUZ=1 ;;
@@ -429,14 +429,14 @@ done # }}}
       then
           DAKIKA=1
           girilen_dakika=$(yad --title="${AD^}" --text 'Dakikayı giriniz [d]' \
-                           --entry --entry-text="$(date -d +%-M)" \
+                           --entry --entry-text="$(date +%-M)" \
                            --sticky --center --fixed --window-icon=gnome-shutdown)
           (( $? == 1 )) && exit 1
       elif [[ $donus = sd ]]
       then
           DAKIKA_ASKIYA_AL=1
           aski_girilen_dakika=$(yad --title="${AD^}" --text 'Dakikayı giriniz [d]' \
-                                --entry --entry-text="$(date -d +%-M)" \
+                                --entry --entry-text="$(date +%-M)" \
                                 --sticky --center --fixed --window-icon=gnome-shutdown)
           (( $? == 1 )) && exit 1
       fi
@@ -547,7 +547,7 @@ done # }}}
     then
         exit 0
     else
-        printf 'Geçersiz istek\n'
+        printf 'Geçersiz işlem numarası\n'
     fi
   done
 } # }}}
@@ -690,14 +690,14 @@ done # }}}
       then
           DAKIKA=1
           girilen_dakika=$(yad --title="${AD^}" --text 'Dakikayı giriniz [d]' \
-                           --entry --entry-text="$(date -d +%-M)" \
+                           --entry --entry-text="$(date +%-M)" \
                            --sticky --center --fixed --window-icon=gnome-shutdown)
           (( $? == 1 )) && exit 1
       elif [[ $gorev = ask[ıi]ya-al-dakika ]]
       then
           DAKIKA_ASKIYA_AL=1
           aski_girilen_dakika=$(yad --title="${AD^}" --text 'Dakikayı giriniz [d]' \
-                                --entry --entry-text="$(date -d +%-M)" \
+                                --entry --entry-text="$(date +%-M)" \
                                 --sticky --center --fixed --window-icon=gnome-shutdown)
           (( $? == 1 )) && exit 1
       fi
@@ -787,7 +787,7 @@ done # }}}
               (( $? == 1 )) && exit 1
       fi
   else
-      for ((i=3; i>0; i--))
+      for ((i=5; i>0; i--))
       {
         printf "\a%d%s\r" "$i" \
           " saniye sonra sistem yeniden başlatılacak."
@@ -840,7 +840,7 @@ done # }}}
               (( $? == 1 )) && exit 1
       fi
   else
-      for ((i=3; i>0; i--))
+      for ((i=5; i>0; i--))
       {
         printf "\a%d%s\r" "$i" \
           " saniye sonra sistem askıya alınacak."
@@ -893,7 +893,7 @@ done # }}}
               (( $? == 1 )) && exit 1
       fi
   else
-      for ((i=3; i>0; i--))
+      for ((i=5; i>0; i--))
       {
         printf "\a%d%s\r" "$i" \
           " saniye sonra sistem kapatılacak."
@@ -907,32 +907,32 @@ done # }}}
 ### DAKIKA yönetimi {{{
 (( DAKIKA )) && {
   pid_denetle
-  [[ -n $(tr -d 0-9 <<<$girilen_dakika) ]] && {
+  [[ -n $(tr -d 0-9 <<<$girilen_dakika) || -z $girilen_dakika ]] && {
     if (( ARAYUZ ))
     then
         if (( arayuz == 1 ))
         then
             kdialog --title="${AD^}" --icon=system-shutdown \
-              --error "$(printf "Hatalı dakika: \`%s'\n" "$girilen_dakika")"
-            exit 1
+              --error "$(printf "Hatalı dakika: \`%s'\n" "${girilen_dakika:-null}")"
         elif (( arayuz == 2 ))
         then
             yad --title="${AD^}" --window-icon=gnome-shutdown \
-              --text "$(printf "Hatalı dakika: \`%s'" "$girilen_dakika")" \
+              --text "$(printf "Hatalı dakika: \`%s'" "${girilen_dakika:-null}")" \
               --timeout=10 --sticky --center --fixed
-            exit 1
         elif (( arayuz == 3 ))
         then
             zenity --title="${AD^}" --warning \
-              --text "$(printf "Hatalı dakika: \`%s'" "$girilen_dakika")" \
+              --text "$(printf "Hatalı dakika: \`%s'" "${girilen_dakika:-null}")" \
               --window-icon=gnome-shutdown --timeout=10
-            exit 1
         fi
     else
-        printf "%s: Hatalı dakika: \`%s'\n" "$AD" "$girilen_dakika"
-        exit 1
+        printf "%s: Hatalı dakika: \`%s'\n" "$AD" "${girilen_dakika:-null}"
     fi
+    exit 1
   }
+  girilen_dakika=$(sed 's:^[0]*::' <<<$girilen_dakika)
+  [[ -z $girilen_dakika ]] && girilen_dakika=0
+  (( ! girilen_dakika )) && bekle=0 || bekle=$((girilen_dakika * 60 - 20))
 
   if (( ARAYUZ ))
   then
@@ -953,40 +953,38 @@ done # }}}
   else
       printf "%s: sisteminiz %d dakika sonra kapatılacak.\a\n" "${AD}" "$girilen_dakika"
   fi
-
-  bekle=$((girilen_dakika * 60 - 20))
   sleep $bekle; kapat_penceresi
 } # }}}
 
 ### DAKIKA_ASKIYA_AL yönetimi {{{
 (( DAKIKA_ASKIYA_AL )) && {
   pid_denetle
-  [[ -n $(tr -d 0-9 <<<$aski_girilen_dakika) ]] && {
+  [[ -n $(tr -d 0-9 <<<$aski_girilen_dakika) || -z $aski_girilen_dakika ]] && {
     if (( ARAYUZ ))
     then
         if (( arayuz == 1 ))
         then
             kdialog --title="${AD^}" --icon=system-shutdown \
-              --error "$(printf "Hatalı dakika: \`%s'\n" "$aski_girilen_dakika")"
-            exit 1
+              --error "$(printf "Hatalı dakika: \`%s'\n" "${aski_girilen_dakika:-null}")"
         elif (( arayuz == 2 ))
         then
             yad --title="${AD^}" --window-icon=gnome-shutdown \
-              --text "$(printf "Hatalı dakika: \`%s'" "$aski_girilen_dakika")" \
+              --text "$(printf "Hatalı dakika: \`%s'" "${aski_girilen_dakika:-null}")" \
               --timeout=10 --sticky --center --fixed
-            exit 1
         elif (( arayuz == 3 ))
         then
             zenity --title="${AD^}" --warning \
-              --text "$(printf "Hatalı dakika: \`%s'" "$aski_girilen_dakika")" \
+              --text "$(printf "Hatalı dakika: \`%s'" "${aski_girilen_dakika:-null}")" \
               --window-icon=gnome-shutdown --timeout=10
-            exit 1
         fi
     else
-        printf "%s: Hatalı dakika: \`%s'\n" "$AD" "$aski_girilen_dakika"
-        exit 1
+        printf "%s: Hatalı dakika: \`%s'\n" "$AD" "${aski_girilen_dakika:-null}"
     fi
+    exit 1
   }
+  aski_girilen_dakika=$(sed 's:^[0]*::' <<<$aski_girilen_dakika)
+  [[ -z $aski_girilen_dakika ]] && aski_girilen_dakika=0
+  (( ! aski_girilen_dakika )) && bekle=0 || bekle=$((aski_girilen_dakika * 60 - 20))
 
   if (( ARAYUZ ))
   then
@@ -1007,8 +1005,6 @@ done # }}}
   else
       printf "%s: Sisteminiz %d dakika sonra askıya alınacak.\a\n" "${AD}" "$aski_girilen_dakika"
   fi
-
-  bekle=$((aski_girilen_dakika * 60 - 20))
   sleep $bekle; askiya_al_penceresi
 } # }}}
 
@@ -1023,22 +1019,20 @@ done # }}}
             kdialog --title="${AD^}" --icon=system-shutdown --error "$(printf '%s\n%s\n' \
               "Girilen saat ya da saat biçimi hatalı: \`$girilen_saat'" \
               "Saati ss:dd biçiminde giriniz.")"
-            exit 1
         elif (( arayuz == 2 ))
         then
             yad --title="${AD^}" --text "$(printf '%s\n%s\n' \
               "Girilen saat ya da saat biçimi hatalı: \`$girilen_saat'" \
               "Saati ss:dd biçiminde giriniz.")" \
               --timeout=10 --window-icon=gnome-shutdown --sticky --center --fixed
-            exit 1
         elif (( arayuz == 3 ))
         then
             zenity --title="${AD^}" --warning --text "$(printf '%s\n%s\n' \
               "Girilen saat ya da saat biçimi hatalı: \`$girilen_saat'" \
               "Saati ss:dd biçiminde giriniz.")" \
               --window-icon=gnome-shutdown --timeout=10
-            exit 1
         fi
+        exit 1
     else
         printf '%s: %s\n%s\n' "$AD" \
           "girilen saat ya da saat biçimi hatalı." \
@@ -1046,33 +1040,27 @@ done # }}}
         exit 1
     fi
   }
-  saat=$(cut -d':' -f1 <<<$girilen_saat | sed 's:^[0]*::')
-  dakika=$(cut -d':' -f2 <<<$girilen_saat | sed 's:^[0]*::')
+  export $(awk -F':' '{printf "saat=%s\ndakika=%s", $1,$2;}' <<<$girilen_saat)
+  sonuc=$(echo "$saat$dakika $(date +%H%M)" | awk '{if($1 > $2) print 1; else if($1 < $2) print 2; else print 0}')
 
-  [[ -z $dakika ]] && dakika=00
-  [[ -z $saat   ]] && saat=00
-  sonuc=$(echo "$saat$dakika $(date +%-H%-M)" | awk '{if($1 > $2) print 1; else if($1 < $2) print 2; else print 0}')
-
-  [[ $saat -gt 23 ]] && {
+  [[ $(echo "$saat 23" | awk '{if($1 > $2) print 1; else if($1 < $2) print 2; else print 0}') == 1  ]] && {
     if (( ARAYUZ ))
     then
         if (( arayuz == 1 ))
         then
             kdialog --title="${AD^}" --icon=system-shutdown \
               --error "$(printf "Girilen saat 23'ten büyük olamaz: \`%s'" "$girilen_saat")"
-            exit 1
         elif (( arayuz == 2 ))
         then
             yad --title="${AD^}" --text "$(printf "Girilen saat 23'ten büyük olamaz: \`%s'" "$girilen_saat")" \
               --timeout=10 --window-icon=gnome-shutdown --sticky --center --fixed
-            exit 1
         elif (( arayuz == 3 ))
         then
             zenity --title="${AD^}" --warning \
               --text "$(printf "Girilen saat 23'ten büyük olamaz: \`%s'" "$girilen_saat")" \
               --window-icon=gnome-shutdown --timeout=10
-            exit 1
         fi
+        exit 1
     else
         printf "%s: girilen saat 23'ten büyük olamaz.\n" "$AD" >&2
         exit 1
@@ -1115,22 +1103,20 @@ done # }}}
             kdialog --title="${AD^}" --icon=system-shutdown --error "$(printf '%s\n%s\n' \
               "Girilen saat ya da saat biçimi hatalı: \`$aski_girilen_saat'" \
               "Saati ss:dd biçiminde giriniz.")"
-            exit 1
         elif (( arayuz == 2 ))
         then
             yad --title="${AD^}" --text "$(printf '%s\n%s\n' \
               "Girilen saat ya da saat biçimi hatalı: \`$aski_girilen_saat'" \
               "Saati ss:dd biçiminde giriniz.")" \
               --timeout=10 --window-icon=gnome-shutdown --sticky --center --fixed
-            exit 1
         elif (( arayuz == 3 ))
         then
             zenity --title="${AD^}" --warning --text "$(printf '%s\n%s\n' \
               "Girilen saat ya da saat biçimi hatalı: \`$aski_girilen_saat'" \
               "Saati ss:dd biçiminde giriniz.")" \
               --window-icon=gnome-shutdown --timeout=10
-            exit 1
         fi
+        exit 1
     else
         printf '%s: %s\n%s\n' "$AD" \
           "girilen saat ya da saat biçimi hatalı." \
@@ -1138,33 +1124,27 @@ done # }}}
         exit 1
     fi
   }
-  saat=$(cut -d':' -f1 <<<$aski_girilen_saat | sed 's:^[0]*::')
-  dakika=$(cut -d':' -f2 <<<$aski_girilen_saat | sed 's:^[0]*::')
+  export $(awk -F':' '{printf "saat=%s\ndakika=%s", $1,$2;}' <<<$aski_girilen_saat)
+  sonuc=$(echo "$saat$dakika $(date +%H%M)" | awk '{if($1 > $2) print 1; else if($1 < $2) print 2; else print 0}')
 
-  [[ -z $dakika ]] && dakika=00
-  [[ -z $saat   ]] && saat=00
-  sonuc=$(echo "$saat$dakika $(date +%-H%-M)" | awk '{if($1 > $2) print 1; else if($1 < $2) print 2; else print 0}')
-
-  [[ $saat -gt 23 ]] && {
+  [[ $(echo "$saat 23" | awk '{if($1 > $2) print 1; else if($1 < $2) print 2; else print 0}') == 1  ]] && {
     if (( ARAYUZ ))
     then
         if (( arayuz == 1 ))
         then
             kdialog --title="${AD^}" --icon=system-shutdown \
               --error "$(printf "Girilen saat 23'ten büyük olamaz: \`%s'" "$girilen_saat")"
-            exit 1
         elif (( arayuz == 2 ))
         then
             yad --title="${AD^}" --text "$(printf "Girilen saat 23'ten büyük olamaz: \`%s'" "$girilen_saat")" \
               --timeout=10 --window-icon=gnome-shutdown --sticky --center --fixed
-            exit 1
         elif (( arayuz == 3 ))
         then
             zenity --title="${AD^}" --warning \
               --text "$(printf "Girilen saat 23'ten büyük olamaz: \`%s'" "$girilen_saat")" \
               --window-icon=gnome-shutdown --timeout=10
-            exit 1
         fi
+        exit 1
     else
         printf "%s: girilen saat 23'ten büyük olamaz.\n" "$AD" >&2
         exit 1
