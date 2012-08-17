@@ -1,11 +1,11 @@
 #!/bin/bash
 # Copyright 2010-2012 Fatih Bostancı <faopera@gmail.com>
 # GPLv3
-# v1.8.0
+# v1.8.1
 
 ### Değişkenler - Giriş {{{
 AD="${0##*/}"
-SURUM=1.8.0
+SURUM=1.8.1
 
 ARAYUZ=0
 YENIDEN_BASLAT=0
@@ -205,7 +205,7 @@ function kapat_penceresi() {
             --text "20 saniye sonra sistem kapatılacak." --auto-close \
             --window-icon=gnome-shutdown --sticky --center --on-top \
             --button='Şimdi kapat:0' --button='İptal:1'
-          (( $? == 0 )) && bilg_kapat 2 || exit 1
+          (( $? == 0 )) && bilg_kapat 2 || exit $?
   elif test -x "$(which zenity 2>/dev/null)"
   then
       (
@@ -216,7 +216,7 @@ function kapat_penceresi() {
       ) | zenity --progress --percentage=5 --title="${AD^}" \
             --text "20 saniye sonra sistem kapatılacak." \
             --window-icon=gnome-shutdown --auto-close
-          (( $? == 0 )) && bilg_kapat 2 || exit 1
+          (( $? == 0 )) && bilg_kapat 2 || exit $?
   else
         for ((c=20; c>0; c--))
         {
@@ -256,7 +256,7 @@ function askiya_al_penceresi() {
             --text "20 saniye sonra sistem askıya alınacak." --auto-close \
             --window-icon=gnome-shutdown --sticky --center --on-top \
             --button='Şimdi askıya al:0' --button='İptal:1'
-          (( $? == 0 )) && bilg_kapat 3 || exit 1
+          (( $? == 0 )) && bilg_kapat 3 || exit $?
   elif test -x "$(which zenity 2>/dev/null)"
   then
       (
@@ -267,7 +267,7 @@ function askiya_al_penceresi() {
       ) | zenity --progress --percentage=5 --title="${AD^}" \
             --text "20 saniye sonra sistem askıya alınacak." \
             --window-icon=gnome-shutdown --auto-close
-          (( $? == 0 )) && bilg_kapat 3 || exit 1
+          (( $? == 0 )) && bilg_kapat 3 || exit $?
   else
         for ((c=20; c>0; c--))
         {
@@ -525,22 +525,22 @@ done # }}}
         break
     elif [[ ${islem} = ${islem_dizisi[3]} ]]
     then
-        read -p 'Kapatılma saatini giriniz <ss:dd> : ' -t 15 girilen_saat || exit 1
+        read -p 'Kapatılma saatini giriniz <ss:dd> : ' -t 15 girilen_saat || exit $?
         SAAT=1
         break
     elif [[ ${islem} = ${islem_dizisi[4]} ]]
     then
-        read -p 'Askıya alınma saatini giriniz <ss:dd> : ' -t 15 aski_girilen_saat || exit 1
+        read -p 'Askıya alınma saatini giriniz <ss:dd> : ' -t 15 aski_girilen_saat || exit $?
         SAAT_ASKIYA_AL=1
         break
     elif [[ ${islem} = ${islem_dizisi[5]} ]]
     then
-        read -p 'Kapatılma için dakika giriniz <dakika> : ' -t 15 girilen_dakika || exit 1
+        read -p 'Kapatılma için dakika giriniz <dakika> : ' -t 15 girilen_dakika || exit $?
         DAKIKA=1
         break
     elif [[ ${islem} = ${islem_dizisi[6]} ]]
     then
-        read -p 'Askıya alınma için dakika giriniz <dakika> : ' -t 15 aski_girilen_dakika || exit 1
+        read -p 'Askıya alınma için dakika giriniz <dakika> : ' -t 15 aski_girilen_dakika || exit $?
         DAKIKA_ASKIYA_AL=1
         break
     elif [[ ${islem} = ${islem_dizisi[7]} ]]
@@ -565,7 +565,7 @@ done # }}}
     'Girilecek saatte askıya al' '' off \
     'Girilecek dakika sonra kapat' '' off \
     'Girilecek dakika sonra askıya al' '' off 2>/tmp/${AD}-dialog-islem
-  (( $? == 0 )) && islem="$( < /tmp/${AD}-dialog-islem)" || exit 1
+  (( $? == 0 )) && islem="$( < /tmp/${AD}-dialog-islem)" || exit $?
   rm -f /tmp/${AD}-dialog-islem &>/dev/null
 
   if [[ ${islem} = 'Şimdi yeniden başlat' ]]
@@ -584,7 +584,7 @@ done # }}}
         --title "İşlemi seçiniz:" \
         --inputbox "$@" \
         "Kapatılma saatini giriniz <ss:dd> :" 0 0 2>/tmp/${AD}-dialog-islem
-      (( $? == 0 )) && girilen_saat="$( < /tmp/${AD}-dialog-islem)" || exit 1
+      (( $? == 0 )) && girilen_saat="$( < /tmp/${AD}-dialog-islem)" || exit $?
       rm -f /tmp/${AD}-dialog-islem &>/dev/null
       SAAT=1
   elif [[ ${islem} = 'Girilecek saatte askıya al' ]]
@@ -594,7 +594,7 @@ done # }}}
         --title "İşlemi seçiniz:" \
         --inputbox "$@" \
         "Askıya alınma saatini giriniz <ss:dd> :" 0 0 2>/tmp/${AD}-dialog-islem
-      (( $? == 0 )) && aski_girilen_saat="$( < /tmp/${AD}-dialog-islem)" || exit 1
+      (( $? == 0 )) && aski_girilen_saat="$( < /tmp/${AD}-dialog-islem)" || exit $?
       rm -f /tmp/${AD}-dialog-islem &>/dev/null
       SAAT_ASKIYA_AL=1
   elif [[ ${islem} = 'Girilecek dakika sonra kapat' ]]
@@ -604,7 +604,7 @@ done # }}}
         --title "İşlemi seçiniz:" \
         --inputbox "$@" \
         "Kapatılma için dakika giriniz <dakika> :" 0 0 2>/tmp/${AD}-dialog-islem
-      (( $? == 0 )) && girilen_dakika="$( < /tmp/${AD}-dialog-islem)" || exit 1
+      (( $? == 0 )) && girilen_dakika="$( < /tmp/${AD}-dialog-islem)" || exit $?
       rm -f /tmp/${AD}-dialog-islem &>/dev/null
       DAKIKA=1
   elif [[ ${islem} = 'Girilecek dakika sonra askıya al' ]]
@@ -614,7 +614,7 @@ done # }}}
         --title "İşlemi seçiniz:" \
         --inputbox "$@" \
         "Askıya alınma için dakika giriniz <dakika> :" 0 0 2>/tmp/${AD}-dialog-islem
-      (( $? == 0 )) && aski_girilen_dakika="$( < /tmp/${AD}-dialog-islem)" || exit 1
+      (( $? == 0 )) && aski_girilen_dakika="$( < /tmp/${AD}-dialog-islem)" || exit $?
       rm -f /tmp/${AD}-dialog-islem &>/dev/null
       DAKIKA_ASKIYA_AL=1
   fi
@@ -953,7 +953,7 @@ done # }}}
   else
       printf "%s: sisteminiz %d dakika sonra kapatılacak.\a\n" "${AD}" "$girilen_dakika"
   fi
-  sleep $bekle && kapat_penceresi || exit 1
+  sleep $bekle && kapat_penceresi || exit $?
 } # }}}
 
 ### DAKIKA_ASKIYA_AL yönetimi {{{
@@ -1005,7 +1005,7 @@ done # }}}
   else
       printf "%s: Sisteminiz %d dakika sonra askıya alınacak.\a\n" "${AD}" "$aski_girilen_dakika"
   fi
-  sleep $bekle && askiya_al_penceresi || exit 1
+  sleep $bekle && askiya_al_penceresi || exit $?
 } # }}}
 
 # SAAT yönetimi {{{
@@ -1089,7 +1089,7 @@ done # }}}
   else
       printf '%s: sisteminizin kapatılacağı saat: %s %s\a\n' "${AD}" "$girilen_saat" "${gun}"
   fi
-  sleep $bekle && kapat_penceresi || exit 1
+  sleep $bekle && kapat_penceresi || exit $?
 } # }}}
 
 # SAAT_ASKIYA_AL yönetimi {{{
@@ -1173,7 +1173,7 @@ done # }}}
   else
       printf '%s: sisteminizin askıya alınacağı saat: %s %s\a\n' "${AD}" "$aski_girilen_saat" "${gun}"
   fi
-  sleep $bekle && askiya_al_penceresi || exit 1
+  sleep $bekle && askiya_al_penceresi || exit $?
 } # }}}
 
 # vim:set ts=2 sw=2 et:
