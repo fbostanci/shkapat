@@ -161,7 +161,7 @@ function bilg_kapat() {
       elif [[ $istek == 3 ]]
       then
           qdbus --system org.freedesktop.UPower /org/freedesktop/UPower \
-            org.freedesktop.UPower.Suspend 
+            org.freedesktop.UPower.Suspend
      fi
   else
       if [[ $istek == @(1|2) ]]
@@ -347,7 +347,7 @@ done # }}}
               sa 'Girilecek saatte kapat' off \
               st 'Girilecek saatte askıya al' off \
               dk 'Girilecek dakika sonra kapat' off \
-              sd 'Girilecek dakika sonra askıya al.' off)
+              sd 'Girilecek dakika sonra askıya al' off)
       (( $? == 1 )) && exit 1
 
       if [[ $donus = yb ]]
@@ -1067,7 +1067,7 @@ done # }}}
     fi
   }
 
-  (( sonuc == 1 )) && { bekle=$(($(date -d "$girilen_saat" +%s) - $(date +%s))); gun=''; } || \
+  (( sonuc == 1 )) && { bekle=$(($(date -d "$girilen_saat" +%s) - $(date +%s))); gun=''; } ||
     { bekle=$((86400 - $(date +%s) + $(date -d "$girilen_saat" +%s))); gun='(Yarın)'; }
 
   (( (bekle-20) > 0 )) && bekle=$((bekle-20)) || kapat_penceresi
@@ -1151,7 +1151,7 @@ done # }}}
     fi
   }
 
-  (( sonuc == 1 )) && { bekle=$(($(date -d "$aski_girilen_saat" +%s) - $(date +%s))); gun=''; } || \
+  (( sonuc == 1 )) && { bekle=$(($(date -d "$aski_girilen_saat" +%s) - $(date +%s))); gun=''; } ||
     { bekle=$((86400 - $(date +%s) + $(date -d "$aski_girilen_saat" +%s))); gun='(Yarın)'; }
 
   (( (bekle-20) > 0 )) && bekle=$((bekle-20)) || askiya_al_penceresi
