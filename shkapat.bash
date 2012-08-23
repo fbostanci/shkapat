@@ -13,6 +13,7 @@ SIMDI_KAPAT=0
 SIMDI_ASKIYA_AL=0
 SAAT_ASKIYA_AL=0
 DAKIKA_ASKIYA_AL=0
+OTURUM_KAPAT=0
 SAAT=0
 DAKIKA=0
 UCBIRIM=0
@@ -22,6 +23,9 @@ HATA_VER=0
 # }}}
 
 # TODO: (2.0) KDE den başka masaüstleri için düzgün kapatma desteği araştır.
+# TODO: (1.9) KDE için oturum kapatma desteği ekle. (Diğer masaüstleri için destek varsa 2.0'da ekle.)
+# TODO: (1.9) kapat_penceresi() ve askiya_al_penceresi() fonk.larını birleştir.
+# TODO: (1.9) kod yinelemelerine bak ve kodu durulaştır.
 
 ### Pid denetle {{{
 function pid_denetle() {
@@ -32,7 +36,7 @@ function pid_denetle() {
       HATA_VER=1
       pid=$( < /tmp/.shkapat.pid)
   else
-      echo "$ypid" > /tmp/.shkapat.pid
+      printf "$ypid" > /tmp/.shkapat.pid
   fi
 
   (( HATA_VER )) && {
@@ -48,7 +52,7 @@ function pid_denetle() {
               0)
                 kill -9 ${pid} &>/dev/null &&
                 kdialog --title="${AD^}" --icon=system-shutdown \
-                  --msgbox "Görev iptal edildi."
+                  --msgbox 'Görev iptal edildi.'
                 exit 0 ;;
               1)
                 exit 1 ;;
@@ -61,7 +65,7 @@ function pid_denetle() {
               0)
                 kill -9 ${pid} &>/dev/null &&
                 yad --title="${AD^}" --timeout=10 --window-icon=gnome-shutdown --sticky --center --fixed \
-                  --text "Görev iptal edildi." --on-top
+                  --text 'Görev iptal edildi.' --on-top
                 exit 0 ;;
               1)
                 exit 1 ;;
@@ -74,7 +78,7 @@ function pid_denetle() {
               0)
                 kill -9 ${pid} &>/dev/null &&
                 zenity --title="${AD^}" --info --timeout=10 --window-icon=gnome-shutdown \
-                  --text "Görev iptal edildi."
+                  --text 'Görev iptal edildi.'
                 exit 0 ;;
               1)
                 exit 1 ;;
@@ -184,7 +188,7 @@ function kapat_penceresi() {
   if test -x "$(which kdialog 2>/dev/null)"
   then
       set -e
-      gor=$(kdialog --icon=system-shutdown --title "${AD^}" --progressbar "kapatılıyor..." 5)
+      gor=$(kdialog --icon=system-shutdown --title "${AD^}" --progressbar 'kapatılıyor...' 5)
       qdbus $gor Set org.kde.kdialog.ProgressDialog maximum 20
       for ((c=0; c<20; c++))
       {
@@ -202,7 +206,7 @@ function kapat_penceresi() {
            printf '%d\n' "$c"; sleep 1
         }
       ) | yad --progress --percentage=5 --title="${AD^}" \
-            --text "20 saniye sonra sistem kapatılacak." --auto-close \
+            --text '20 saniye sonra sistem kapatılacak.' --auto-close \
             --window-icon=gnome-shutdown --sticky --center --on-top \
             --button='Şimdi kapat:0' --button='İptal:1'
           (( $? == 0 )) && bilg_kapat 2 || exit $?
@@ -214,14 +218,14 @@ function kapat_penceresi() {
            printf '%d\n' "$c"; sleep 1
         }
       ) | zenity --progress --percentage=5 --title="${AD^}" \
-            --text "20 saniye sonra sistem kapatılacak." \
+            --text '20 saniye sonra sistem kapatılacak.' \
             --window-icon=gnome-shutdown --auto-close
           (( $? == 0 )) && bilg_kapat 2 || exit $?
   else
         for ((c=20; c>0; c--))
         {
-           printf "\a%2d%s\r" "$c" \
-             " saniye sonra sistem kapatılacak."
+           printf '\a%2d%s\r' "$c" \
+             ' saniye sonra sistem kapatılacak.'
            sleep 1
         }
         bilg_kapat 2
@@ -235,7 +239,7 @@ function askiya_al_penceresi() {
   if test -x "$(which kdialog 2>/dev/null)"
   then
       set -e
-      gor=$(kdialog --icon=system-shutdown --title "${AD^}" --progressbar "askıya alınıyor..." 5)
+      gor=$(kdialog --icon=system-shutdown --title "${AD^}" --progressbar 'askıya alınıyor...' 5)
       qdbus $gor Set org.kde.kdialog.ProgressDialog maximum 20
       for ((c=0; c<20; c++))
       {
@@ -253,7 +257,7 @@ function askiya_al_penceresi() {
            printf '%d\n' "$c"; sleep 1
         }
       ) | yad --progress --percentage=5 --title="${AD^}" \
-            --text "20 saniye sonra sistem askıya alınacak." --auto-close \
+            --text '20 saniye sonra sistem askıya alınacak.' --auto-close \
             --window-icon=gnome-shutdown --sticky --center --on-top \
             --button='Şimdi askıya al:0' --button='İptal:1'
           (( $? == 0 )) && bilg_kapat 3 || exit $?
@@ -265,14 +269,14 @@ function askiya_al_penceresi() {
            printf '%d\n' "$c"; sleep 1
         }
       ) | zenity --progress --percentage=5 --title="${AD^}" \
-            --text "20 saniye sonra sistem askıya alınacak." \
+            --text '20 saniye sonra sistem askıya alınacak.' \
             --window-icon=gnome-shutdown --auto-close
           (( $? == 0 )) && bilg_kapat 3 || exit $?
   else
         for ((c=20; c>0; c--))
         {
-           printf "\a%2d%s\r" "$c" \
-             " saniye sonra sistem askıya alınacak."
+           printf '\a%2d%s\r' "$c" \
+             ' saniye sonra sistem askıya alınacak.'
            sleep 1
         }
         bilg_kapat 3
@@ -752,7 +756,7 @@ done # }}}
       if (( arayuz == 1 ))
       then
           set -e; d=5
-          gor=$(kdialog --icon=system-shutdown --title "${AD^}" --progressbar "yeniden başlatılıyor..." 20)
+          gor=$(kdialog --icon=system-shutdown --title "${AD^}" --progressbar 'yeniden başlatılıyor...' 20)
           qdbus $gor Set org.kde.kdialog.ProgressDialog maximum 5
           for ((c=0; c<5; c++))
           {
@@ -770,7 +774,7 @@ done # }}}
               printf '%d\n' "$c"; sleep 1
             }
           ) | yad --progress --percentage=20 --title="${AD^}" \
-                --text "5 saniye sonra sistem yeniden başlatılacak." --auto-close \
+                --text '5 saniye sonra sistem yeniden başlatılacak.' --auto-close \
                 --window-icon=gnome-shutdown --sticky --center \
                 --button='İptal:1'
               (( $? == 1 )) && exit 1
@@ -782,15 +786,15 @@ done # }}}
               printf '%d\n' "$c"; sleep 1
             }
           ) | zenity --progress --percentage=20 --title="${AD^}" \
-                --text "5 saniye sonra sistem yeniden başlatılacak." \
+                --text '5 saniye sonra sistem yeniden başlatılacak.' \
                 --window-icon=gnome-shutdown --auto-close
               (( $? == 1 )) && exit 1
       fi
   else
       for ((i=5; i>0; i--))
       {
-        printf "\a%d%s\r" "$i" \
-          " saniye sonra sistem yeniden başlatılacak."
+        printf '\a%d%s\r' "$i" \
+          ' saniye sonra sistem yeniden başlatılacak.'
         sleep 1
       }
       printf '\n\n%s\a\n' 'Yeniden başlatılıyor...'
@@ -805,7 +809,7 @@ done # }}}
       if (( arayuz == 1 ))
       then
           set -e; d=5
-          gor=$(kdialog --icon=system-shutdown --title "${AD^}" --progressbar "askıya alınıyor..." 20)
+          gor=$(kdialog --icon=system-shutdown --title "${AD^}" --progressbar 'askıya alınıyor...' 20)
           qdbus $gor Set org.kde.kdialog.ProgressDialog maximum 5
           for ((c=0; c<5; c++))
           {
@@ -823,7 +827,7 @@ done # }}}
               printf '%d\n' "$c"; sleep 1
             }
           ) | yad --progress --percentage=20 --title="${AD^}" \
-                --text "5 saniye sonra sistem askıya alınacak." --auto-close \
+                --text '5 saniye sonra sistem askıya alınacak.' --auto-close \
                 --window-icon=gnome-shutdown --sticky --center \
                 --button='İptal:1'
               (( $? == 1 )) && exit 1
@@ -835,15 +839,15 @@ done # }}}
               printf '%d\n' "$c"; sleep 1
             }
           ) | zenity --progress --percentage=20 --title="${AD^}" \
-                --text "5 saniye sonra sistem askıya alınacak." \
+                --text '5 saniye sonra sistem askıya alınacak.' \
                 --window-icon=gnome-shutdown --auto-close
               (( $? == 1 )) && exit 1
       fi
   else
       for ((i=5; i>0; i--))
       {
-        printf "\a%d%s\r" "$i" \
-          " saniye sonra sistem askıya alınacak."
+        printf '\a%d%s\r' "$i" \
+          ' saniye sonra sistem askıya alınacak.'
         sleep 1
       }
       printf '\n\n%s\a\n' 'Askıya alınıyor...'
@@ -858,7 +862,7 @@ done # }}}
       if (( arayuz == 1 ))
       then
           set -e; d=5
-          gor=$(kdialog --icon=system-shutdown --title "${AD^}" --progressbar "kapatılıyor..." 20)
+          gor=$(kdialog --icon=system-shutdown --title "${AD^}" --progressbar 'kapatılıyor...' 20)
           qdbus $gor Set org.kde.kdialog.ProgressDialog maximum 5
           for ((c=0; c<5; c++))
           {
@@ -876,7 +880,7 @@ done # }}}
               printf '%d\n' "$c"; sleep 1
             }
           ) | yad --progress --percentage=20 --title="${AD^}" \
-                --text "5 saniye sonra sistem kapatılacak" --auto-close \
+                --text '5 saniye sonra sistem kapatılacak' --auto-close \
                 --window-icon=gnome-shutdown --sticky --center \
                 --button='İptal:1'
               (( $? == 1 )) && exit 1
@@ -888,15 +892,15 @@ done # }}}
               printf '%d\n' "$c"; sleep 1
             }
           ) | zenity --progress --percentage=20 --title="${AD^}" \
-                --text "5 saniye sonra sistem kapatılacak" \
+                --text '5 saniye sonra sistem kapatılacak' \
                 --window-icon=gnome-shutdown --auto-close
               (( $? == 1 )) && exit 1
       fi
   else
       for ((i=5; i>0; i--))
       {
-        printf "\a%d%s\r" "$i" \
-          " saniye sonra sistem kapatılacak."
+        printf '\a%d%s\r' "$i" \
+          ' saniye sonra sistem kapatılacak.'
         sleep 1
       }
       printf '\n\n%s\a\n' 'Kapatılıyor...'
@@ -939,19 +943,19 @@ done # }}}
       if (( arayuz == 1 ))
       then
           kdialog --title="${AD^}" --icon=system-shutdown \
-            --msgbox "$(printf "Sisteminiz %d dakika sonra kapatılacak." "$girilen_dakika")" &
+            --msgbox "$(printf 'Sisteminiz %d dakika sonra kapatılacak.' "$girilen_dakika")" &
       elif (( arayuz == 2 ))
       then
           yad --title="${AD^}" --timeout=10 --window-icon=gnome-shutdown --sticky --center --fixed \
-            --text "$(printf "Sisteminiz %d dakika sonra kapatılacak." "$girilen_dakika")" &
+            --text "$(printf 'Sisteminiz %d dakika sonra kapatılacak.' "$girilen_dakika")" &
       elif (( arayuz == 3 ))
       then
           zenity --title="${AD^}" --info \
-            --text "$(printf "Sisteminiz %d dakika sonra kapatılacak." "$girilen_dakika")" \
+            --text "$(printf 'Sisteminiz %d dakika sonra kapatılacak.' "$girilen_dakika")" \
             --window-icon=gnome-shutdown --timeout=10 &
       fi
   else
-      printf "%s: sisteminiz %d dakika sonra kapatılacak.\a\n" "${AD}" "$girilen_dakika"
+      printf '%s: sisteminiz %d dakika sonra kapatılacak.\a\n' "${AD}" "$girilen_dakika"
   fi
   sleep $bekle && kapat_penceresi || exit $?
 } # }}}
@@ -991,19 +995,19 @@ done # }}}
       if (( arayuz == 1 ))
       then
           kdialog --title="${AD^}" --icon=system-shutdown \
-            --msgbox "$(printf "Sisteminiz %d dakika sonra askıya alınacak." "$aski_girilen_dakika")" &
+            --msgbox "$(printf 'Sisteminiz %d dakika sonra askıya alınacak.' "$aski_girilen_dakika")" &
       elif (( arayuz == 2 ))
       then
           yad --title="${AD^}" --timeout=10 --window-icon=gnome-shutdown --sticky --center --fixed \
-            --text "$(printf "Sisteminiz %d dakika sonra askıya alınacak." "$aski_girilen_dakika")" &
+            --text "$(printf 'Sisteminiz %d dakika sonra askıya alınacak.' "$aski_girilen_dakika")" &
       elif (( arayuz == 3 ))
       then
           zenity --title="${AD^}" --info \
-            --text "$(printf "Sisteminiz %d dakika sonra askıya alınacak." "$aski_girilen_dakika")" \
+            --text "$(printf 'Sisteminiz %d dakika sonra askıya alınacak.' "$aski_girilen_dakika")" \
             --window-icon=gnome-shutdown --timeout=10 &
       fi
   else
-      printf "%s: Sisteminiz %d dakika sonra askıya alınacak.\a\n" "${AD}" "$aski_girilen_dakika"
+      printf '%s: Sisteminiz %d dakika sonra askıya alınacak.\a\n' "${AD}" "$aski_girilen_dakika"
   fi
   sleep $bekle && askiya_al_penceresi || exit $?
 } # }}}
@@ -1018,25 +1022,25 @@ done # }}}
         then
             kdialog --title="${AD^}" --icon=system-shutdown --error "$(printf '%s\n%s\n' \
               "Girilen saat ya da saat biçimi hatalı: \`$girilen_saat'" \
-              "Saati ss:dd biçiminde giriniz.")"
+              'Saati ss:dd biçiminde giriniz.')"
         elif (( arayuz == 2 ))
         then
             yad --title="${AD^}" --text "$(printf '%s\n%s\n' \
               "Girilen saat ya da saat biçimi hatalı: \`$girilen_saat'" \
-              "Saati ss:dd biçiminde giriniz.")" \
+              'Saati ss:dd biçiminde giriniz.')" \
               --timeout=10 --window-icon=gnome-shutdown --sticky --center --fixed
         elif (( arayuz == 3 ))
         then
             zenity --title="${AD^}" --warning --text "$(printf '%s\n%s\n' \
               "Girilen saat ya da saat biçimi hatalı: \`$girilen_saat'" \
-              "Saati ss:dd biçiminde giriniz.")" \
+              'Saati ss:dd biçiminde giriniz.')" \
               --window-icon=gnome-shutdown --timeout=10
         fi
         exit 1
     else
         printf '%s: %s\n%s\n' "$AD" \
-          "girilen saat ya da saat biçimi hatalı." \
-          "Saati ss:dd biçiminde giriniz."
+          'girilen saat ya da saat biçimi hatalı.' \
+          'Saati ss:dd biçiminde giriniz.'
         exit 1
     fi
   }
@@ -1102,25 +1106,25 @@ done # }}}
         then
             kdialog --title="${AD^}" --icon=system-shutdown --error "$(printf '%s\n%s\n' \
               "Girilen saat ya da saat biçimi hatalı: \`$aski_girilen_saat'" \
-              "Saati ss:dd biçiminde giriniz.")"
+              'Saati ss:dd biçiminde giriniz.')"
         elif (( arayuz == 2 ))
         then
             yad --title="${AD^}" --text "$(printf '%s\n%s\n' \
               "Girilen saat ya da saat biçimi hatalı: \`$aski_girilen_saat'" \
-              "Saati ss:dd biçiminde giriniz.")" \
+              'Saati ss:dd biçiminde giriniz.')" \
               --timeout=10 --window-icon=gnome-shutdown --sticky --center --fixed
         elif (( arayuz == 3 ))
         then
             zenity --title="${AD^}" --warning --text "$(printf '%s\n%s\n' \
               "Girilen saat ya da saat biçimi hatalı: \`$aski_girilen_saat'" \
-              "Saati ss:dd biçiminde giriniz.")" \
+              'Saati ss:dd biçiminde giriniz.')" \
               --window-icon=gnome-shutdown --timeout=10
         fi
         exit 1
     else
         printf '%s: %s\n%s\n' "$AD" \
-          "girilen saat ya da saat biçimi hatalı." \
-          "Saati ss:dd biçiminde giriniz."
+          'girilen saat ya da saat biçimi hatalı.' \
+          'Saati ss:dd biçiminde giriniz.'
         exit 1
     fi
   }
