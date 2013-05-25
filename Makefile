@@ -1,6 +1,6 @@
 #
 #
-#	Shkapat 1.8.0 Makefile
+#	Shkapat 1.8.2 Makefile
 #
 #
 
