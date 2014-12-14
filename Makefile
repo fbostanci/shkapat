@@ -1,11 +1,11 @@
 #
 #
-#	Shkapat 1.8.2 Makefile
+#	Shkapat 1.8.1 Makefile
 #
 #
 
 SHELL = /bin/bash
-surum = $(shell sed -n 's:^SURUM=::p' shkapat.bash)
+surum = $(shell cat VERSION)
 derleme = $(shell git log -1 --pretty=format:'%ad' --abbrev-commit --date=short 2>/dev/null | tr -d -- '-')
 
 ifeq "$(derleme)" ""

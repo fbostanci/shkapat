@@ -1,11 +1,11 @@
 #!/bin/bash
-# Copyright 2010-2013 Fatih Bostancı <faopera@gmail.com>
+# Copyright 2010-2015 Fatih Bostancı <faopera@gmail.com>
 # GPLv3
-# v1.8.2
+# v1.8.1
 
 ### Değişkenler - Giriş {{{
-AD="${0##*/}"
-SURUM=1.8.2
+AD=shkapat
+SURUM=1.8.1
 
 ARAYUZ=0
 YENIDEN_BASLAT=0
@@ -22,16 +22,14 @@ UNITY=0
 HATA_VER=0
 # }}}
 
-# TODO: (2.0) KDE den başka masaüstleri için düzgün kapatma desteği araştır.
-# TODO: (2.0) systemd desteği.
-# TODO: (1.9) KDE için oturum kapatma desteği ekle. (Diğer masaüstleri için destek varsa 2.0'da ekle.)
-# TODO: (1.9) kapat_penceresi() ve askiya_al_penceresi() fonk.larını birleştir. ##TAMAM##
-# TODO: (1.9) kod yinelemelerine bak ve kodu durulaştır.
+# TODO: (2.0) KDE den başka masaüstleri için uygun kapatma desteği.
+# TODO: (1.9) KDE için oturum kapatma desteği.
+# TODO: (1.9) systemd desteği
 
 ### Pid denetle {{{
 function pid_denetle() {
   local ypid=$$
-  local pid ileti yanit
+  local ileti yanit
 
   if [[ -f /tmp/.shkapat.pid && -n $(ps -p $( < /tmp/.shkapat.pid) -o comm=) ]]
   then
@@ -91,16 +89,16 @@ function pid_denetle() {
           "Başka bir zamanlanmış görev mevcut. pid=${pid}" \
           'Şimdi iptal etmek ister misiniz [E/h]?'
 
-        read -n1 yanit -t 15 || exit $?
-        case ${yanit} in
-          [eEyY])
-            kill -9 ${pid} &>/dev/null &&
-            printf '\n%s: %s\n' "${AD^}" \
-              'Görev iptal edildi.'
-            exit 0 ;;
-          *)
-            exit 1 ;;
-        esac
+       read -n1 yanit -t 15 || exit $?
+       case ${yanit} in
+         [eEyY])
+           kill -9 ${pid} &>/dev/null &&
+           printf '\n%s: %s\n' "${AD^}" \
+             'Görev iptal edildi.'
+           exit 0 ;;
+         *)
+           exit 1 ;;
+       esac
     fi
   }
 } # }}}
@@ -111,13 +109,19 @@ function bilgi() {
 
   if [[ $1 = s ]]
   then
-      printf '%b\n\n%s\n\n%s\n%s\n%s\n%s\n' \
-        "${B}${AD^} $SURUM${R}" \
-        'Copyright (c) 2010-2013 Fatih Bostancı'\
-        'Bu uygulama bir özgür yazılımdır: yeniden dağıtabilirsiniz ve/veya'\
-        'Özgür Yazılım Vakfı (FSF) tarafından yayımlanan (GPL)  Genel  kamu'\
-        'lisansı sürüm 3  veya daha yeni bir sürümünde belirtilen  şartlara'\
-        'uymak kaydıyla, üzerinde değişiklik yapabilirsiniz.'
+      printf '%b\n%s\n\n%s\n%s\n%s\n%s\n\n%s\n%s\n%s\n%s\n\n%s\n%s\n' \
+        "${B}${AD^} ${SURUM}${R} (https://gitorious.org/shkapat)"\
+        'Copyright (C) 2010-2015 Fatih Bostancı'\
+        'This program is free software; you can redistribute it and/or modify'\
+        'it under the terms of the GNU General Public License as published by'\
+        'the Free Software Foundation; either version 3 of the License, or'\
+        '(at your option) any later version.'\
+        'This program is distributed in the hope that it will be useful,'\
+        'but WITHOUT ANY WARRANTY; without even the implied warranty of'\
+        'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the'\
+        'GNU General Public License for more details.'\
+        'You should have received a copy of the GNU General Public License'\
+        'along with this program. If not, see http://www.gnu.org/licenses/.'
   elif [[ $1 = y ]]
   then
       printf_bicim='\n\n%b\n\n%b\n%s\n\n%b\n%s\n\n%b\n%s\n\n%b\n%s\n\n%b'
@@ -161,7 +165,7 @@ function bilg_kapat() {
 
   if [[ -n $KDE_SESSION_UID ]]
   then
-      if [[ $istek == @(0|1|2) ]]
+      if [[ $istek == @(1|2) ]]
       then
           qdbus org.kde.ksmserver /KSMServer logout 0 $istek 2
       elif [[ $istek == 3 ]]
@@ -185,35 +189,21 @@ function bilg_kapat() {
 
 ### Kapat penceresi {{{
 function kapat_penceresi() {
-  local grv="$1"
-  local gor c ilt_1 ilt_2 ilt_3 islem_sin
-  local d=20
-
-  (( grv )) && {
-    ilt_1='kapatılıyor...'
-    ilt_2='kapatılacak.'
-    ilt_3='Şimdi kapat'
-    islem_sin=2
-  } || {
-    ilt_1='askıya alınıyor...'
-    ilt_2='askıya alınacak.'
-    ilt_3='Şimdi askıya al'
-    islem_sin=3
-  }
+  local gor c d=20
 
   if test -x "$(which kdialog 2>/dev/null)"
   then
-      gor=$(kdialog --icon=system-shutdown --title "${AD^}" --progressbar "${ilt_1}" 5)
-      qdbus $gor Set org.kde.kdialog.ProgressDialog maximum 20
       set -e
+      gor=$(kdialog --icon=system-shutdown --title "${AD^}" --progressbar 'kapatılıyor...' 5)
+      qdbus $gor Set org.kde.kdialog.ProgressDialog maximum 20
       for ((c=0; c<20; c++))
       {
         printf '\a'
         qdbus $gor Set org.kde.kdialog.ProgressDialog value $c
-        qdbus $gor setLabelText "$d saniye sonra sistem ${ilt_2}"
+        qdbus $gor setLabelText "$d saniye sonra sistem kapatılacak."
         ((d--)); sleep 1
       }
-      qdbus $gor close; bilg_kapat $islem_sin
+      qdbus $gor close; bilg_kapat 2
   elif test -x "$(which yad 2>/dev/null)"
   then
       (
@@ -222,10 +212,10 @@ function kapat_penceresi() {
            printf '%d\n' "$c"; sleep 1
         }
       ) | yad --progress --percentage=5 --title="${AD^}" \
-            --text "20 saniye sonra sistem ${ilt_2}" --auto-close \
+            --text '20 saniye sonra sistem kapatılacak.' --auto-close \
             --window-icon=gnome-shutdown --sticky --center --on-top \
-            --button="${ilt_3}:0" --button='İptal:1'
-          (( $? == 0 )) && bilg_kapat $islem_sin || exit $?
+            --button='Şimdi kapat:0' --button='İptal:1'
+          (( $? == 0 )) && bilg_kapat 2 || exit $?
   elif test -x "$(which zenity 2>/dev/null)"
   then
       (
@@ -234,17 +224,68 @@ function kapat_penceresi() {
            printf '%d\n' "$c"; sleep 1
         }
       ) | zenity --progress --percentage=5 --title="${AD^}" \
-            --text "20 saniye sonra sistem ${ilt_2}" \
+            --text '20 saniye sonra sistem kapatılacak.' \
             --window-icon=gnome-shutdown --auto-close
-          (( $? == 0 )) && bilg_kapat $islem_sin || exit $?
+          (( $? == 0 )) && bilg_kapat 2 || exit $?
   else
         for ((c=20; c>0; c--))
         {
            printf '\a%2d%s\r' "$c" \
-             " saniye sonra sistem ${ilt_2}"
+             ' saniye sonra sistem kapatılacak.'
            sleep 1
         }
-        bilg_kapat $islem_sin
+        bilg_kapat 2
+  fi
+} # }}}
+
+### Askıya_al penceresi {{{
+function askiya_al_penceresi() {
+  local gor c d=20
+
+  if test -x "$(which kdialog 2>/dev/null)"
+  then
+      set -e
+      gor=$(kdialog --icon=system-shutdown --title "${AD^}" --progressbar 'askıya alınıyor...' 5)
+      qdbus $gor Set org.kde.kdialog.ProgressDialog maximum 20
+      for ((c=0; c<20; c++))
+      {
+        printf '\a'
+        qdbus $gor Set org.kde.kdialog.ProgressDialog value $c
+        qdbus $gor setLabelText "$d saniye sonra sistem askıya alınacak."
+        ((d--)); sleep 1
+      }
+      qdbus $gor close; bilg_kapat 3
+  elif test -x "$(which yad 2>/dev/null)"
+  then
+      (
+        for ((c=5; c<100; c+=5))
+        {
+           printf '%d\n' "$c"; sleep 1
+        }
+      ) | yad --progress --percentage=5 --title="${AD^}" \
+            --text '20 saniye sonra sistem askıya alınacak.' --auto-close \
+            --window-icon=gnome-shutdown --sticky --center --on-top \
+            --button='Şimdi askıya al:0' --button='İptal:1'
+          (( $? == 0 )) && bilg_kapat 3 || exit $?
+  elif test -x "$(which zenity 2>/dev/null)"
+  then
+      (
+        for ((c=5; c<100; c+=5))
+        {
+           printf '%d\n' "$c"; sleep 1
+        }
+      ) | zenity --progress --percentage=5 --title="${AD^}" \
+            --text '20 saniye sonra sistem askıya alınacak.' \
+            --window-icon=gnome-shutdown --auto-close
+          (( $? == 0 )) && bilg_kapat 3 || exit $?
+  else
+        for ((c=20; c>0; c--))
+        {
+           printf '\a%2d%s\r' "$c" \
+             ' saniye sonra sistem askıya alınacak.'
+           sleep 1
+        }
+        bilg_kapat 3
   fi
 } # }}}
 
@@ -253,9 +294,8 @@ uzun_secenekler='saat:,dakika:,ybaşlat,ybaslat,kapat,help,yardım,yardim,'
 uzun_secenekler+='surum,sürüm,version,gui,arayuz,arayüz,unity:,askiya-al,'
 uzun_secenekler+='askıya-al,askıya-al-saat:,askiya-al-saat:,askıya-al-dakika:,'
 uzun_secenekler+='askiya-al-dakika:,as:,ad:,cli,ucbirim,uçbirim,terminal,dialog'
-uzun_secenekler+='oturum-kapat,logout'
 
-DES=$(getopt -n "${AD}" -o 'as:d:ykhvo' -l "${uzun_secenekler}" -- "$@")
+DES=$(getopt -n "${AD}" -o 'as:d:ykhv' -l "${uzun_secenekler}" -- "$@")
 (( $? == 1 )) && exit 1
 
 eval set -- "$DES"
@@ -281,8 +321,6 @@ do
       YENIDEN_BASLAT=1 ;;
     -k|--kapat)
       SIMDI_KAPAT=1 ;;
-    -o|--oturum-kapat|--logout)
-      OTURUM_KAPAT=1 ;;
     --unity)
       UNITY=1
       shift; gorev="$1" ;;
@@ -925,7 +963,7 @@ done # }}}
   else
       printf '%s: sisteminiz %d dakika sonra kapatılacak.\a\n' "${AD}" "$girilen_dakika"
   fi
-  sleep $bekle && kapat_penceresi 1 || exit $?
+  sleep $bekle && kapat_penceresi || exit $?
 } # }}}
 
 ### DAKIKA_ASKIYA_AL yönetimi {{{
@@ -977,7 +1015,7 @@ done # }}}
   else
       printf '%s: Sisteminiz %d dakika sonra askıya alınacak.\a\n' "${AD}" "$aski_girilen_dakika"
   fi
-  sleep $bekle && kapat_penceresi 0 || exit $?
+  sleep $bekle && askiya_al_penceresi || exit $?
 } # }}}
 
 # SAAT yönetimi {{{
@@ -1042,7 +1080,7 @@ done # }}}
   (( sonuc == 1 )) && { bekle=$(($(date -d "$girilen_saat" +%s) - $(date +%s))); gun=''; } ||
     { bekle=$((86400 - $(date +%s) + $(date -d "$girilen_saat" +%s))); gun='(Yarın)'; }
 
-  (( (bekle-20) > 0 )) && bekle=$((bekle-20)) || kapat_penceresi 1
+  (( (bekle-20) > 0 )) && bekle=$((bekle-20)) || kapat_penceresi
   if (( ARAYUZ ))
   then
       if (( arayuz == 1 ))
@@ -1061,7 +1099,7 @@ done # }}}
   else
       printf '%s: sisteminizin kapatılacağı saat: %s %s\a\n' "${AD}" "$girilen_saat" "${gun}"
   fi
-  sleep $bekle && kapat_penceresi 1 || exit $?
+  sleep $bekle && kapat_penceresi || exit $?
 } # }}}
 
 # SAAT_ASKIYA_AL yönetimi {{{
@@ -1126,7 +1164,7 @@ done # }}}
   (( sonuc == 1 )) && { bekle=$(($(date -d "$aski_girilen_saat" +%s) - $(date +%s))); gun=''; } ||
     { bekle=$((86400 - $(date +%s) + $(date -d "$aski_girilen_saat" +%s))); gun='(Yarın)'; }
 
-  (( (bekle-20) > 0 )) && bekle=$((bekle-20)) || kapat_penceresi 0
+  (( (bekle-20) > 0 )) && bekle=$((bekle-20)) || askiya_al_penceresi
   if (( ARAYUZ ))
   then
       if (( arayuz == 1 ))
@@ -1145,7 +1183,7 @@ done # }}}
   else
       printf '%s: sisteminizin askıya alınacağı saat: %s %s\a\n' "${AD}" "$aski_girilen_saat" "${gun}"
   fi
-  sleep $bekle && kapat_penceresi 0 || exit $?
+  sleep $bekle && askiya_al_penceresi || exit $?
 } # }}}
 
 # vim:set ts=2 sw=2 et:
