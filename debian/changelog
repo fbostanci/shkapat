@@ -1,3 +1,9 @@
+shkapat (1.8.1-2~distroguide~utopic) utopic; urgency=medium
+
+  * yeni surum
+
+ -- Fatih Bostanci <faopera@gmail.com>  Sun, 11 Jan 2015 16:27:54 +0200
+
 shkapat (1.8.0-1~distroguide~precise) precise; urgency=low
 
   * Ucbirimden kullanım icin dialog ve secke secenekleri eklendi.

@@ -2,8 +2,8 @@ Source: shkapat
 Section: misc
 Priority: extra
 Maintainer: Fatih Bostancı <faopera@gmail.com>
-Build-Depends: debhelper, cdbs
-Standards-Version: 3.9.1
+Build-Depends: cdbs
+Standards-Version: 3.9.5
 Homepage: https://gitorious.org/shkapat
 
 Package: shkapat

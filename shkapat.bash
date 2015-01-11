@@ -177,8 +177,13 @@ function bilg_kapat() {
       if [[ $istek == @(1|2) ]]
       then
           [[ $istek == 2 ]] && istek=Stop || { [[ $istek == 1 ]] && istek=Restart; }
+          [[ $(systemctl is-system-running &>/dev/null) ]] && {
+              [[ ${istek} = Stop    ]] && systemctl poweroff || {
+              [[ ${istek} = Restart ]] && systemctl reboot; }
+          } || {
           dbus-send --system --print-reply --dest='org.freedesktop.ConsoleKit' \
             /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.${istek}
+          }
       elif [[ $istek == 3 ]]
       then
           dbus-send --system --print-reply --dest='org.freedesktop.UPower' \

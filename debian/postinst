@@ -1,3 +1,4 @@
 #!/bin/bash
 
-gtk-update-icon-cache -f -q -t /usr/share/icons/hicolor
+  xdg-icon-resource forceupdate --theme hicolor &> /dev/null
+  update-desktop-database -q
