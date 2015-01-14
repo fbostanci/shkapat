@@ -4,9 +4,10 @@
 #
 #
 
-SHELL = /bin/bash
-surum = $(shell cat VERSION)
-derleme = $(shell git log -1 --pretty=format:'%ad' --abbrev-commit --date=short 2>/dev/null | tr -d -- '-')
+SHELL    = /bin/bash
+DESTDIR  =
+surum    = $(shell cat VERSION)
+derleme  = $(shell git log -1 --pretty=format:'%ad' --abbrev-commit --date=short 2>/dev/null | tr -d -- '-')
 
 ifeq "$(derleme)" ""
 	derleme = bilinmeyen
