@@ -39,7 +39,7 @@ SAAT=0
 DAKIKA=0
 UCBIRIM=0
 DIALOG=0
-UNITY=0
+EYLEM=0
 HATA_VER=0
 # }}}
 
@@ -197,18 +197,24 @@ bilg_kapat() {
       if (( istek == 1 || istek == 2 ))
       then
           calisacak "qdbus org.kde.ksmserver /KSMServer logout 0 $istek 2"
+          qdbus org.kde.ksmserver /KSMServer logout 0 $istek 2
       elif (( istek == 3 ))
       then
           if [[ $(qdbus org.kde.Solid.PowerManagement \
                /org/freedesktop/PowerManagement CanSuspend) = true ]]
           then
               calisacak "qdbus org.kde.Solid.PowerManagement /org/freedesktop/PowerManagement Suspend"
+              qdbus org.kde.Solid.PowerManagement /org/freedesktop/PowerManagement Suspend
           else
-               pidof systemd &>/dev/null && calisacak "systemctl suspend"
+              pidof systemd &>/dev/null && {
+                calisacak "systemctl suspend"
+                systemctl suspend
+              }
           fi
       elif (( istek == 4 ))
       then
           calisacak "qdbus org.kde.ksmserver /KSMServer logout 0 3 3"
+          qdbus org.kde.ksmserver /KSMServer logout 0 3 3
       fi
 
   elif ps -e | grep -E '^.* xfce4-session$' > /dev/null
@@ -216,15 +222,19 @@ bilg_kapat() {
       if (( istek == 1 ))
       then
           calisacak "xfce4-session-logout --reboot"
+          xfce4-session-logout --reboot
       elif (( istek == 2 ))
       then
           calisacak "xfce4-session-logout --halt"
+          xfce4-session-logout --halt
       elif (( istek == 3 ))
       then
           calisacak "xfce4-session-logout --suspend"
+          xfce4-session-logout --suspend
       elif (( istek == 4 ))
       then
           calisacak "xfce4-session-logout --logout"
+          xfce4-session-logout --logout
       fi
 
   elif ps -e | grep -E '^.* cinnamon$' > /dev/null
@@ -232,15 +242,21 @@ bilg_kapat() {
       if (( istek == 1 ))
       then
           calisacak "cinnamon-session-quit --reboot --force"
+          cinnamon-session-quit --reboot --force
       elif (( istek == 2 ))
       then
           calisacak "cinnamon-session-quit --poweroff --force"
+          cinnamon-session-quit --poweroff --force
       elif (( istek == 3 ))
       then
-          pidof systemd &>/dev/null && calisacak "systemctl suspend"
+          pidof systemd &>/dev/null && {
+            calisacak "systemctl suspend"
+            systemctl suspend
+          }
       elif (( istek == 4 ))
       then
           calisacak "cinnamon-session-quit --logout --no-prompt"
+          cinnamon-session-quit --logout --no-prompt
       fi
 
   elif ps -e | grep -E '^.* gnome-session$' > /dev/null
@@ -248,15 +264,21 @@ bilg_kapat() {
       if (( istek == 1 ))
       then
           calisacak "gnome-session-quit --reboot --force"
+          gnome-session-quit --reboot --force
       elif (( istek == 2 ))
       then
           calisacak "gnome-session-quit --poweroff --force"
+          gnome-session-quit --poweroff --force
       elif (( istek == 3 ))
       then
-          pidof systemd &>/dev/null && calisacak "systemctl suspend"
+          pidof systemd &>/dev/null && {
+            calisacak "systemctl suspend"
+            systemctl suspend
+          }
       elif (( istek == 4 ))
       then
           calisacak "gnome-session-quit --logout --no-prompt"
+          gnome-session-quit --logout --no-prompt
       fi
 
   elif pidof systemd &>/dev/null
@@ -264,15 +286,19 @@ bilg_kapat() {
       if (( istek == 1 ))
       then
           calisacak "systemctl reboot"
+          systemctl reboot
       elif (( istek == 2 ))
       then
           calisacak "systemctl poweroff"
+          systemctl poweroff
       elif (( istek == 3 ))
       then
           calisacak "systemctl suspend"
+          systemctl suspend
       elif (( istek == 4 ))
       then
           calisacak "loginctl terminate-user $USER"
+          loginctl terminate-user $USER
       fi
 
   else
@@ -287,6 +313,10 @@ bilg_kapat() {
           dbus-send --system --print-reply --dest="org.freedesktop.ConsoleKit" \
           /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Suspend  \
           boolean:true
+      elif (( istek == 4))
+      then
+          printf '%s: masaüstü ortamı oturum kapat desteği bilinmiyor.\n' "${AD}"
+          exit 0
       fi
   fi
 } # }}}
@@ -360,7 +390,7 @@ kapat_penceresi() {
 
 ### Değişkenleri ayıkla {{{
 uzun_secenekler='saat:,dakika:,ybaşlat,ybaslat,kapat,help,yardım,yardim,'
-uzun_secenekler+='surum,sürüm,version,gui,arayuz,arayüz,unity:,askiya-al,'
+uzun_secenekler+='surum,sürüm,version,gui,arayuz,arayüz,eylem:,askiya-al,'
 uzun_secenekler+='askıya-al,askıya-al-saat:,askiya-al-saat:,askıya-al-dakika:,'
 uzun_secenekler+='askiya-al-dakika:,as:,ad:,cli,ucbirim,uçbirim,terminal,dialog'
 uzun_secenekler+='oturum-kapat,logout,reboot,shutdown,suspend'
@@ -393,8 +423,8 @@ do
       SIMDI_KAPAT=1 ;;
     -o|--oturum-kapat|--logout)
       OTURUM_KAPAT=1 ;;
-    --unity)
-      UNITY=1
+    --eylem)
+      EYLEM=1
       shift; gorev="$1" ;;
     -v|--s[uü]r[uü]m|--version)
       bilgi s
@@ -595,6 +625,7 @@ done # }}}
   PS3='İşlem numarasını giriniz: '
   islem_dizisi=( 'Şimdi yeniden başlat'
                  'Şimdi kapat'
+                 'Şimdi oturum kapat'
                  'Şimdi askıya al'
                  'Girilecek saatte kapat'
                  'Girilecek saatte askıya al'
@@ -615,29 +646,32 @@ done # }}}
         break
     elif [[ ${islem} = ${islem_dizisi[2]} ]]
     then
+        OTURUM_KAPAT=1
+    elif [[ ${islem} = ${islem_dizisi[3]} ]]
+    then
         SIMDI_ASKIYA_AL=1
         break
-    elif [[ ${islem} = ${islem_dizisi[3]} ]]
+    elif [[ ${islem} = ${islem_dizisi[4]} ]]
     then
         read -p 'Kapatılma saatini giriniz <ss:dd> : ' -t 15 girilen_saat || exit $?
         SAAT=1
         break
-    elif [[ ${islem} = ${islem_dizisi[4]} ]]
+    elif [[ ${islem} = ${islem_dizisi[5]} ]]
     then
         read -p 'Askıya alınma saatini giriniz <ss:dd> : ' -t 15 aski_girilen_saat || exit $?
         SAAT_ASKIYA_AL=1
         break
-    elif [[ ${islem} = ${islem_dizisi[5]} ]]
+    elif [[ ${islem} = ${islem_dizisi[6]} ]]
     then
         read -p 'Kapatılma için dakika giriniz <dakika> : ' -t 15 girilen_dakika || exit $?
         DAKIKA=1
         break
-    elif [[ ${islem} = ${islem_dizisi[6]} ]]
+    elif [[ ${islem} = ${islem_dizisi[7]} ]]
     then
         read -p 'Askıya alınma için dakika giriniz <dakika> : ' -t 15 aski_girilen_dakika || exit $?
         DAKIKA_ASKIYA_AL=1
         break
-    elif [[ ${islem} = ${islem_dizisi[7]} ]]
+    elif [[ ${islem} = ${islem_dizisi[8]} ]]
     then
         exit 0
     else
@@ -718,8 +752,8 @@ done # }}}
   fi
 } # }}}
 
-### UNITY yönetimi {{{
-(( UNITY )) && {
+### EYLEM yönetimi {{{
+(( EYLEM )) && {
   ARAYUZ=1
 
   if [[ $gorev = ybaslat ]]
@@ -833,6 +867,7 @@ done # }}}
   fi
 } # }}}
 
+# arayuz_dialog {{{
 arayuz_dialog() {
   local ilt_1 ilt_2 gor
   if (( YENIDEN_BASLAT ))
@@ -901,7 +936,7 @@ arayuz_dialog() {
       }
       printf '\n\n%s\a\n' "${ilt_1^}"
   fi
-}
+} # }}}
 
 ### YENIDEN_BASLAT yönetimi {{{
 (( YENIDEN_BASLAT )) && {
@@ -926,6 +961,7 @@ arayuz_dialog() {
   bilg_kapat 4
 }
 
+# arayuz_dakika_dialog {{{
 arayuz_dakika_dialog() {
   local dakika ilt_1
 
@@ -985,7 +1021,7 @@ arayuz_dakika_dialog() {
   else
       printf "%s: sisteminiz %d dakika sonra ${ilt_1}\a\n" "${AD}" "$dakika"
   fi
-}
+} # }}}
 
 ### DAKIKA yönetimi {{{
 (( DAKIKA )) && {
@@ -1001,6 +1037,7 @@ arayuz_dakika_dialog() {
   sleep $bekle && kapat_penceresi aski || exit $?
 } # }}}
 
+### arayuz_saat_dialog {{{
 arayuz_saat_dialog() {
   local saat ilt_1
 
@@ -1092,7 +1129,8 @@ arayuz_saat_dialog() {
   else
       printf "%s: sisteminizin ${ilt_1} saat: %s %s\a\n" "${AD}" "$saat" "${gun}"
   fi
-}
+} # }}}
+
 # SAAT yönetimi {{{
 (( SAAT )) && {
   pid_denetle

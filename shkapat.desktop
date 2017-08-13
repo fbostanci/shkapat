@@ -1,4 +1,3 @@
-#!/usr/bin/env xdg-open
 [Desktop Entry]
 Version=1.0
 Name=Shkapat
@@ -8,36 +7,38 @@ Exec=/usr/bin/shkapat --arayuz
 Icon=shkapat
 Terminal=false
 Encoding=UTF-8
-X-MultipleArgs=false
 Type=Application
 Categories=Utility;
-Desktop-Actions=ShkapatG1;ShkapatG2;ShkapatG3;ShkapatG4;ShkapatG5;ShkapatG6;ShkapatG7;
-TargetEnvironment=Unity
+Actions=ShkapatG1;ShkapatG2;ShkapatG3;ShkapatG4;ShkapatG5;ShkapatG6;ShkapatG7;ShkapatG8;
 
-[ShkapatG1 Shortcut Group]
+[Desktop Action ShkapatG1]
 Name=Şimdi yeniden başlat
-Exec=/usr/bin/shkapat --unity ybaslat
+Exec=/usr/bin/shkapat --eylem ybaslat
 
-[ShkapatG2 Shortcut Group]
+[Desktop Action ShkapatG2]
 Name=Şimdi Kapat
-Exec=/usr/bin/shkapat --unity kapat
+Exec=/usr/bin/shkapat --eylem kapat
 
-[ShkapatG3 Shortcut Group]
+[Desktop Action ShkapatG3]
+Name=Şimdi oturumu kapat
+Exec=/usr/bin/shkapat --eylem oturum-kapat
+
+[Desktop Action ShkapatG4]
 Name=Şimdi Askıya al
-Exec=/usr/bin/shkapat --unity askiya-al
+Exec=/usr/bin/shkapat --eylem askiya-al
 
-[ShkapatG4 Shortcut Group]
+[Desktop Action ShkapatG5]
 Name=Girilecek saatte kapat
-Exec=/usr/bin/shkapat --unity saat
+Exec=/usr/bin/shkapat --eylem saat
 
-[ShkapatG5 Shortcut Group]
+[Desktop Action ShkapatG6]
 Name=Girilecek saatte askıya al
-Exec=/usr/bin/shkapat --unity askiya-al-saat
+Exec=/usr/bin/shkapat --eylem askiya-al-saat
 
-[ShkapatG6 Shortcut Group]
+[Desktop Action ShkapatG7]
 Name=Girilecek dakika sonra kapat
-Exec=/usr/bin/shkapat --unity dakika
+Exec=/usr/bin/shkapat --eylem dakika
 
-[ShkapatG7 Shortcut Group]
+[Desktop Action ShkapatG8]
 Name=Girilecek dakika sonra askıya al
-Exec=/usr/bin/shkapat --unity askiya-al-dakika
+Exec=/usr/bin/shkapat --eylem askiya-al-dakika

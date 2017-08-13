@@ -1,16 +1,16 @@
 #
 #
-#	Shkapat 1.8.1 Makefile
+#	Shkapat 2.0 Makefile
 #
 #
 
 SHELL    = /bin/bash
 DESTDIR  =
 surum    = $(shell cat VERSION)
-derleme  = $(shell git log -1 --pretty=format:'%ad' --abbrev-commit --date=short 2>/dev/null | tr -d -- '-')
+duzenleme  = $(shell git log -1 --pretty=format:'%ad' --abbrev-commit --date=short 2>/dev/null | tr -d -- '-')
 
-ifeq "$(derleme)" ""
-	derleme = bilinmeyen
+ifeq "$(duzenleme)" ""
+	duzenleme = bilinmeyen
 endif
 
 all:
@@ -40,8 +40,8 @@ uninstall:
 
 dist:
 	@echo "Kaynak kod paketi oluşturuluyor. Lütfen bekleyiniz..."
-	@git archive master | xz > shkapat-$(surum).$(derleme).tar.xz
-	@echo "İşlem tamamlandı. ----------> shkapat-$(surum).$(derleme).tar.xz"
+	@git archive master | xz > shkapat-$(surum).$(duzenleme).tar.xz
+	@echo "İşlem tamamlandı. ----------> shkapat-$(surum).$(duzenleme).tar.xz"
 
 
 .PHONY: all dist install uninstall
