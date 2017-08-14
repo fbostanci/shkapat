@@ -24,6 +24,8 @@
 #
 #
 
+AYIKLA=${AYIKLA:-1}
+(( AYIKLA == 2 )) && set -x
 ### Değişkenler - Giriş {{{
 AD=shkapat
 SURUM=2.0
@@ -41,12 +43,11 @@ UCBIRIM=0
 DIALOG=0
 EYLEM=0
 HATA_VER=0
-AYIKLA=${$AYIKLA:-1}
 # }}}
 
 # TODO: (2.0) KDE den başka masaüstleri için uygun kapatma desteği.
 # TODO: (1.9) systemd desteği
-(( AYIKLA == 2 )) && set -x
+
 ### Pid denetle {{{
 pid_denetle() {
   local ypid=$$
@@ -182,7 +183,8 @@ bilgi() {
 
 calisacak() {
   (( AYIKLA )) && printf '%s:  istek:::> %s\nçalışacak komut:::> %s\n' "${AD}" "$istek" "$1"
-  (( AYIKLA == 1 )) && exit 0
+  (( AYIKLA == 2 )) && set +x
+  (( AYIKLA )) && exit 0
 }
 
 ### Kapat -bilg_kapat {{{
@@ -1181,5 +1183,5 @@ arayuz_saat_dialog() {
   arayuz_saat_dialog
   sleep $bekle && kapat_penceresi aski || exit $?
 } # }}}
-(( AYIKLA == 2 )) && set +x
+
 # vim:set ts=2 sw=2 et:
