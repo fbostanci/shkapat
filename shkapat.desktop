@@ -14,31 +14,39 @@ Actions=ShkapatG1;ShkapatG2;ShkapatG3;ShkapatG4;ShkapatG5;ShkapatG6;ShkapatG7;Sh
 [Desktop Action ShkapatG1]
 Name=Şimdi yeniden başlat
 Exec=/usr/bin/shkapat --eylem ybaslat
+Icon=system-reboot
 
 [Desktop Action ShkapatG2]
 Name=Şimdi Kapat
 Exec=/usr/bin/shkapat --eylem kapat
+Icon=system-shutdown
 
 [Desktop Action ShkapatG3]
 Name=Şimdi oturumu kapat
 Exec=/usr/bin/shkapat --eylem oturum-kapat
+Icon=system-log-out
 
 [Desktop Action ShkapatG4]
 Name=Şimdi Askıya al
 Exec=/usr/bin/shkapat --eylem askiya-al
+Icon=system-suspend
 
 [Desktop Action ShkapatG5]
 Name=Girilecek saatte kapat
 Exec=/usr/bin/shkapat --eylem saat
+Icon=chronometer
 
 [Desktop Action ShkapatG6]
 Name=Girilecek saatte askıya al
 Exec=/usr/bin/shkapat --eylem askiya-al-saat
+Icon=chronometer
 
 [Desktop Action ShkapatG7]
 Name=Girilecek dakika sonra kapat
 Exec=/usr/bin/shkapat --eylem dakika
+Icon=chronometer
 
 [Desktop Action ShkapatG8]
 Name=Girilecek dakika sonra askıya al
 Exec=/usr/bin/shkapat --eylem askiya-al-dakika
+Icon=chronometer
