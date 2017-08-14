@@ -109,7 +109,7 @@ pid_denetle() {
           "Başka bir zamanlanmış görev mevcut. pid=${pid}" \
           'Şimdi iptal etmek ister misiniz [E/h]?'
 
-       read -n1 yanit -t 15 || exit $?
+       read -t 15 -n1 yanit || exit $?
        case ${yanit} in
          [eEyY])
            kill -9 ${pid} &>/dev/null &&
@@ -647,6 +647,7 @@ done # }}}
     elif [[ ${islem} = ${islem_dizisi[2]} ]]
     then
         OTURUM_KAPAT=1
+        break
     elif [[ ${islem} = ${islem_dizisi[3]} ]]
     then
         SIMDI_ASKIYA_AL=1
