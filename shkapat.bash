@@ -41,11 +41,12 @@ UCBIRIM=0
 DIALOG=0
 EYLEM=0
 HATA_VER=0
+AYIKLA=${$AYIKLA:-1}
 # }}}
 
 # TODO: (2.0) KDE den başka masaüstleri için uygun kapatma desteği.
 # TODO: (1.9) systemd desteği
-
+(( AYIKLA == 2 )) && set -x
 ### Pid denetle {{{
 pid_denetle() {
   local ypid=$$
@@ -180,8 +181,8 @@ bilgi() {
 } # }}}
 
 calisacak() {
-  printf '%s:  istek:::> %s\nçalışacak komut:::> %s\n' "${AD}" "$istek" "$1"
-  exit 0
+  (( AYIKLA )) && printf '%s:  istek:::> %s\nçalışacak komut:::> %s\n' "${AD}" "$istek" "$1"
+  (( AYIKLA == 1 )) && exit 0
 }
 
 ### Kapat -bilg_kapat {{{
@@ -341,7 +342,20 @@ kapat_penceresi() {
       islem_sin=3
   fi
 
-  if test -x "$(which kdialog 2>/dev/null)"
+  if test -x "$(which yad 2>/dev/null)"
+  then
+      (
+        for ((c=5; c<100; c+=5))
+        {
+           printf '%d\n' "$c"; sleep 1
+        }
+      ) | yad --progress --percentage=5 --title="${AD^}" \
+            --text "20 saniye sonra sistem ${ilt_2}" --auto-close \
+            --window-icon=shkapat --sticky --center --on-top \
+            --button="${ilt_3}:0" --button='İptal:1'
+          (( $? == 0 )) && bilg_kapat $islem_sin || exit $?
+
+  elif test -x "$(which kdialog 2>/dev/null)"
   then
       set -e
       gor=$(kdialog --icon=shkapat --title "${AD^}" --progressbar "${ilt_1}" 5)
@@ -358,18 +372,7 @@ kapat_penceresi() {
         }
       }
       qdbus $gor close; bilg_kapat $islem_sin
-  elif test -x "$(which yad 2>/dev/null)"
-  then
-      (
-        for ((c=5; c<100; c+=5))
-        {
-           printf '%d\n' "$c"; sleep 1
-        }
-      ) | yad --progress --percentage=5 --title="${AD^}" \
-            --text "20 saniye sonra sistem ${ilt_2}" --auto-close \
-            --window-icon=shkapat --sticky --center --on-top \
-            --button="${ilt_3}:0" --button='İptal:1'
-          (( $? == 0 )) && bilg_kapat $islem_sin || exit $?
+
   elif test -x "$(which zenity 2>/dev/null)"
   then
       (
@@ -396,7 +399,7 @@ kapat_penceresi() {
 uzun_secenekler='saat:,dakika:,ybaşlat,ybaslat,kapat,help,yardım,yardim,'
 uzun_secenekler+='surum,sürüm,version,gui,arayuz,arayüz,eylem:,askiya-al,'
 uzun_secenekler+='askıya-al,askıya-al-saat:,askiya-al-saat:,askıya-al-dakika:,'
-uzun_secenekler+='askiya-al-dakika:,as:,ad:,cli,ucbirim,uçbirim,terminal,dialog'
+uzun_secenekler+='askiya-al-dakika:,as:,ad:,cli,ucbirim,uçbirim,terminal,dialog,'
 uzun_secenekler+='oturum-kapat,logout,reboot,shutdown,suspend'
 
 DES=$(getopt -n "${AD}" -o 'as:d:ykhvo' -l "${uzun_secenekler}" -- "$@")
@@ -452,61 +455,9 @@ done # }}}
 
 ### ARAYUZ yonetimi {{{
 (( ARAYUZ )) && {
-  if test -x "$(which kdialog 2>/dev/null)"
+  if test -x "$(which yad 2>/dev/null)"
   then
       arayuz=1
-      donus=$(kdialog --icon=shkapat \
-              --title "${AD^}" --radiolist 'İşlemi seçiniz:' \
-              yb 'Şimdi yeniden başlat' on \
-              kt 'Şimdi kapat' off \
-              ot 'Şimdi oturumu kapat' off \
-              sp 'Şimdi askıya al' off \
-              sa 'Girilecek saatte kapat' off \
-              st 'Girilecek saatte askıya al' off \
-              dk 'Girilecek dakika sonra kapat' off \
-              sd 'Girilecek dakika sonra askıya al' off)
-      (( $? == 1 )) && exit 1
-
-      if [[ $donus = yb ]]
-      then
-          YENIDEN_BASLAT=1
-      elif [[ $donus = kt ]]
-      then
-          SIMDI_KAPAT=1
-      elif [[ $donus = ot ]]
-      then
-          OTURUM_KAPAT=1
-      elif [[ $donus = sp ]]
-      then
-          SIMDI_ASKIYA_AL=1
-      elif [[ $donus = sa ]]
-      then
-          SAAT=1
-          girilen_saat=$(kdialog --icon=shkapat --title "${AD^}" --inputbox \
-                         'Kapatılma saatini giriniz <ss:dd>' $(date -d '1 minute' +%H:%M))
-          (( $? == 1 )) && exit 1
-      elif [[ $donus = st ]]
-      then
-          SAAT_ASKIYA_AL=1
-          aski_girilen_saat=$(kdialog --icon=shkapat --title "${AD^}" --inputbox \
-                              'Askıya alınma saatini giriniz <ss:dd>' $(date -d '1 minute' +%H:%M))
-          (( $? == 1 )) && exit 1
-      elif [[ $donus = dk ]]
-      then
-          DAKIKA=1
-          girilen_dakika=$(kdialog --icon=shkapat --title "${AD^}" --inputbox \
-                           'dakikayı giriniz <d>' $(date +%-M))
-          (( $? == 1 )) && exit 1
-      elif [[ $donus = sd ]]
-      then
-          DAKIKA_ASKIYA_AL=1
-          aski_girilen_dakika=$(kdialog --icon=shkapat --title "${AD^}" --inputbox \
-                                'dakikayı giriniz <d>' $(date +%-M))
-          (( $? == 1 )) && exit 1
-      fi
-  elif test -x "$(which yad 2>/dev/null)"
-  then
-      arayuz=2
       donus=$(yad --title="${AD^}" --text='İşlemi seçiniz:' \
               --window-icon=shkapat \
               --sticky --center \
@@ -564,6 +515,60 @@ done # }}}
                                 --sticky --center --fixed --window-icon=shkapat)
           (( $? == 1 )) && exit 1
       fi
+
+  elif test -x "$(which kdialog 2>/dev/null)"
+  then
+      arayuz=2
+      donus=$(kdialog --icon=shkapat \
+              --title "${AD^}" --radiolist 'İşlemi seçiniz:' \
+              yb 'Şimdi yeniden başlat' on \
+              kt 'Şimdi kapat' off \
+              ot 'Şimdi oturumu kapat' off \
+              sp 'Şimdi askıya al' off \
+              sa 'Girilecek saatte kapat' off \
+              st 'Girilecek saatte askıya al' off \
+              dk 'Girilecek dakika sonra kapat' off \
+              sd 'Girilecek dakika sonra askıya al' off)
+      (( $? == 1 )) && exit 1
+
+      if [[ $donus = yb ]]
+      then
+          YENIDEN_BASLAT=1
+      elif [[ $donus = kt ]]
+      then
+          SIMDI_KAPAT=1
+      elif [[ $donus = ot ]]
+      then
+          OTURUM_KAPAT=1
+      elif [[ $donus = sp ]]
+      then
+          SIMDI_ASKIYA_AL=1
+      elif [[ $donus = sa ]]
+      then
+          SAAT=1
+          girilen_saat=$(kdialog --icon=shkapat --title "${AD^}" --inputbox \
+                         'Kapatılma saatini giriniz <ss:dd>' $(date -d '1 minute' +%H:%M))
+          (( $? == 1 )) && exit 1
+      elif [[ $donus = st ]]
+      then
+          SAAT_ASKIYA_AL=1
+          aski_girilen_saat=$(kdialog --icon=shkapat --title "${AD^}" --inputbox \
+                              'Askıya alınma saatini giriniz <ss:dd>' $(date -d '1 minute' +%H:%M))
+          (( $? == 1 )) && exit 1
+      elif [[ $donus = dk ]]
+      then
+          DAKIKA=1
+          girilen_dakika=$(kdialog --icon=shkapat --title "${AD^}" --inputbox \
+                           'dakikayı giriniz <d>' $(date +%-M))
+          (( $? == 1 )) && exit 1
+      elif [[ $donus = sd ]]
+      then
+          DAKIKA_ASKIYA_AL=1
+          aski_girilen_dakika=$(kdialog --icon=shkapat --title "${AD^}" --inputbox \
+                                'dakikayı giriniz <d>' $(date +%-M))
+          (( $? == 1 )) && exit 1
+      fi
+
   elif test -x "$(which zenity 2>/dev/null)"
   then
       arayuz=3
@@ -724,6 +729,7 @@ done # }}}
       (( $? == 0 )) && girilen_saat="$( < /tmp/${AD}-dialog-islem)" || exit $?
       rm -f /tmp/${AD}-dialog-islem &>/dev/null
       SAAT=1
+
   elif [[ ${islem} = 'Girilecek saatte askıya al' ]]
   then
       dialog --backtitle "${AD^} $SURUM" \
@@ -734,6 +740,7 @@ done # }}}
       (( $? == 0 )) && aski_girilen_saat="$( < /tmp/${AD}-dialog-islem)" || exit $?
       rm -f /tmp/${AD}-dialog-islem &>/dev/null
       SAAT_ASKIYA_AL=1
+
   elif [[ ${islem} = 'Girilecek dakika sonra kapat' ]]
   then
       dialog --backtitle "${AD^} $SURUM" \
@@ -744,6 +751,7 @@ done # }}}
       (( $? == 0 )) && girilen_dakika="$( < /tmp/${AD}-dialog-islem)" || exit $?
       rm -f /tmp/${AD}-dialog-islem &>/dev/null
       DAKIKA=1
+
   elif [[ ${islem} = 'Girilecek dakika sonra askıya al' ]]
   then
       dialog --backtitle "${AD^} $SURUM" \
@@ -776,19 +784,21 @@ done # }}}
   elif [[ $gorev = saat ]]
   then
       SAAT=1
-      if test -x "$(which kdialog 2>/dev/null)"
+      if test -x "$(which yad 2>/dev/null)"
       then
           arayuz=1
-          girilen_saat=$(kdialog --icon=shkapat --title "${AD^}" --inputbox \
-                        'Kapatılma saatini giriniz <ss:dd>' $(date -d '1 minute' +%H:%M))
-          (( $? == 1 )) && exit 1
-      elif test -x "$(which yad 2>/dev/null)"
-      then
-          arayuz=2
           girilen_saat=$(yad --title="${AD^}" --text 'Kapatılma saatini giriniz [ss:dd]' \
                          --entry --entry-text="$(date -d '1 minute' +%H:%M)" \
                          --sticky --center --fixed --window-icon=shkapat)
           (( $? == 1 )) && exit 1
+
+      elif test -x "$(which kdialog 2>/dev/null)"
+      then
+          arayuz=2
+          girilen_saat=$(kdialog --icon=shkapat --title "${AD^}" --inputbox \
+                        'Kapatılma saatini giriniz <ss:dd>' $(date -d '1 minute' +%H:%M))
+          (( $? == 1 )) && exit 1
+
       elif test -x "$(which zenity 2>/dev/null)"
       then
           arayuz=3
@@ -800,19 +810,21 @@ done # }}}
   elif [[ $gorev = askiya-al-saat ]]
   then
       SAAT_ASKIYA_AL=1
-      if test -x "$(which kdialog 2>/dev/null)"
+      if test -x "$(which yad 2>/dev/null)"
       then
           arayuz=1
-          aski_girilen_saat=$(kdialog --icon=shkapat --title "${AD^}" --inputbox \
-                        'Askıya alınma saatini giriniz <ss:dd>' $(date -d '1 minute' +%H:%M))
-          (( $? == 1 )) && exit 1
-      elif test -x "$(which yad 2>/dev/null)"
-      then
-          arayuz=2
           aski_girilen_saat=$(yad --title="${AD^}" --text 'Askıya alınma saatini giriniz [ss:dd]' \
                          --entry --entry-text="$(date -d '1 minute' +%H:%M)" \
                          --sticky --center --fixed --window-icon=shkapat)
           (( $? == 1 )) && exit 1
+  
+      elif test -x "$(which kdialog 2>/dev/null)"
+      then
+          arayuz=2
+          aski_girilen_saat=$(kdialog --icon=shkapat --title "${AD^}" --inputbox \
+                        'Askıya alınma saatini giriniz <ss:dd>' $(date -d '1 minute' +%H:%M))
+          (( $? == 1 )) && exit 1
+
       elif test -x "$(which zenity 2>/dev/null)"
       then
           arayuz=3
@@ -824,19 +836,21 @@ done # }}}
   elif [[ $gorev = dakika ]]
   then
       DAKIKA=1
-      if test -x "$(which kdialog 2>/dev/null)"
+      if test -x "$(which yad 2>/dev/null)"
       then
           arayuz=1
-          girilen_dakika=$(kdialog --icon=shkapat --title "${AD^}" --inputbox \
-                          'dakikayı giriniz <d>' $(date +%-M))
-          (( $? == 1 )) && exit 1
-      elif test -x "$(which yad 2>/dev/null)"
-      then
-          arayuz=2
           girilen_dakika=$(yad --title="${AD^}" --text 'Dakikayı giriniz [d]' \
                            --entry --entry-text="$(date +%-M)" \
                            --sticky --center --fixed --window-icon=shkapat)
           (( $? == 1 )) && exit 1
+
+      elif test -x "$(which kdialog 2>/dev/null)"
+      then
+          arayuz=2
+          girilen_dakika=$(kdialog --icon=shkapat --title "${AD^}" --inputbox \
+                          'dakikayı giriniz <d>' $(date +%-M))
+          (( $? == 1 )) && exit 1
+
       elif test -x "$(which zenity 2>/dev/null)"
       then
           arayuz=3
@@ -848,19 +862,21 @@ done # }}}
   elif [[ $gorev = askiya-al-dakika ]]
   then
       DAKIKA_ASKIYA_AL=1
-      if test -x "$(which kdialog 2>/dev/null)"
+      if test -x "$(which yad 2>/dev/null)"
       then
           arayuz=1
-          aski_girilen_dakika=$(kdialog --icon=shkapat --title "${AD^}" --inputbox \
-                               'dakikayı giriniz <d>' $(date +%-M))
-          (( $? == 1 )) && exit 1
-      elif test -x "$(which yad 2>/dev/null)"
-      then
-          arayuz=2
           aski_girilen_dakika=$(yad --title="${AD^}" --text 'Dakikayı giriniz [d]' \
                                 --entry --entry-text="$(date +%-M)" \
                                 --sticky --center --fixed --window-icon=shkapat)
           (( $? == 1 )) && exit 1
+
+      elif test -x "$(which kdialog 2>/dev/null)"
+      then
+          arayuz=2
+          aski_girilen_dakika=$(kdialog --icon=shkapat --title "${AD^}" --inputbox \
+                               'dakikayı giriniz <d>' $(date +%-M))
+          (( $? == 1 )) && exit 1
+
       elif test -x "$(which zenity 2>/dev/null)"
       then
           arayuz=3
@@ -897,6 +913,19 @@ arayuz_dialog() {
   then
       if (( arayuz == 1 ))
       then
+          (
+            for ((c=20; c<100; c+=20))
+            {
+              printf '%d\n' "$c"; sleep 1
+            }
+          ) | yad --progress --percentage=20 --title="${AD^}" \
+                --text "5 saniye sonra ${ilt_2}" --auto-close \
+                --window-icon=shkapat --sticky --center \
+                --button='İptal:1'
+              (( $? == 1 )) && exit 1
+
+      elif (( arayuz == 2 ))
+      then
           set -e; d=5
           gor=$(kdialog --icon=shkapat --title "${AD^}" --progressbar "${ilt_1}" 20)
           qdbus $gor Set org.kde.kdialog.ProgressDialog maximum 5
@@ -912,18 +941,7 @@ arayuz_dialog() {
             }
           }
           qdbus $gor close
-      elif (( arayuz == 2 ))
-      then
-          (
-            for ((c=20; c<100; c+=20))
-            {
-              printf '%d\n' "$c"; sleep 1
-            }
-          ) | yad --progress --percentage=20 --title="${AD^}" \
-                --text "5 saniye sonra ${ilt_2}" --auto-close \
-                --window-icon=shkapat --sticky --center \
-                --button='İptal:1'
-              (( $? == 1 )) && exit 1
+
       elif (( arayuz == 3 ))
       then
           (
@@ -989,13 +1007,15 @@ arayuz_dakika_dialog() {
     then
         if (( arayuz == 1 ))
         then
-            kdialog --title="${AD^}" --icon=shkapat \
-              --error "$(printf "Hatalı dakika: \`%s'\n" "${dakika:-null}")"
-        elif (( arayuz == 2 ))
-        then
             yad --title="${AD^}" --window-icon=shkapat \
               --text "$(printf "Hatalı dakika: \`%s'" "${dakika:-null}")" \
               --timeout=10 --sticky --center --fixed
+
+        elif (( arayuz == 2 ))
+        then
+            kdialog --title="${AD^}" --icon=shkapat \
+              --error "$(printf "Hatalı dakika: \`%s'\n" "${dakika:-null}")"
+
         elif (( arayuz == 3 ))
         then
             zenity --title="${AD^}" --warning \
@@ -1015,12 +1035,14 @@ arayuz_dakika_dialog() {
   then
       if (( arayuz == 1 ))
       then
-          kdialog --title="${AD^}" --icon=shkapat \
-            --msgbox "$(printf "Sisteminiz %d dakika sonra ${ilt_1}" "$dakika")" &
-      elif (( arayuz == 2 ))
-      then
           yad --title="${AD^}" --timeout=10 --window-icon=shkapat --sticky --center --fixed \
             --text "$(printf "Sisteminiz %d dakika sonra ${ilt_1}" "$dakika")" &
+
+      elif (( arayuz == 2 ))
+      then
+          kdialog --title="${AD^}" --icon=shkapat \
+            --msgbox "$(printf "Sisteminiz %d dakika sonra ${ilt_1}" "$dakika")" &
+
       elif (( arayuz == 3 ))
       then
           zenity --title="${AD^}" --info \
@@ -1065,15 +1087,17 @@ arayuz_saat_dialog() {
     then
         if (( arayuz == 1 ))
         then
-            kdialog --title="${AD^}" --icon=shkapat --error "$(printf '%s\n%s\n' \
-              "Girilen saat ya da saat biçimi hatalı: \`$saat'" \
-              'Saati ss:dd biçiminde giriniz.')"
-        elif (( arayuz == 2 ))
-        then
             yad --title="${AD^}" --text "$(printf '%s\n%s\n' \
               "Girilen saat ya da saat biçimi hatalı: \`$saat'" \
               'Saati ss:dd biçiminde giriniz.')" \
               --timeout=10 --window-icon=shkapat --sticky --center --fixed
+
+        elif (( arayuz == 2 ))
+        then
+            kdialog --title="${AD^}" --icon=shkapat --error "$(printf '%s\n%s\n' \
+              "Girilen saat ya da saat biçimi hatalı: \`$saat'" \
+              'Saati ss:dd biçiminde giriniz.')"
+
         elif (( arayuz == 3 ))
         then
             zenity --title="${AD^}" --warning --text "$(printf '%s\n%s\n' \
@@ -1097,12 +1121,14 @@ arayuz_saat_dialog() {
     then
         if (( arayuz == 1 ))
         then
-            kdialog --title="${AD^}" --icon=shkapat \
-              --error "$(printf "Girilen saat 23'ten büyük olamaz: \`%s'" "$saat")"
-        elif (( arayuz == 2 ))
-        then
             yad --title="${AD^}" --text "$(printf "Girilen saat 23'ten büyük olamaz: \`%s'" "$saat")" \
               --timeout=10 --window-icon=shkapat --sticky --center --fixed
+
+        elif (( arayuz == 2 ))
+        then
+            kdialog --title="${AD^}" --icon=shkapat \
+              --error "$(printf "Girilen saat 23'ten büyük olamaz: \`%s'" "$saat")"
+
         elif (( arayuz == 3 ))
         then
             zenity --title="${AD^}" --warning \
@@ -1124,12 +1150,14 @@ arayuz_saat_dialog() {
   then
       if (( arayuz == 1 ))
       then
-          kdialog --title="${AD^}" --icon=shkapat \
-            --msgbox "$(printf "Sisteminizin ${ilt_1} saat: %s %s" "$saat" "${gun}")" &
-      elif (( arayuz == 2 ))
-      then
           yad --title="${AD^}" --timeout=10 --window-icon=shkapat --sticky --center --fixed \
             --text "$(printf "Sisteminizin ${ilt_1} saat: %s %s" "$saat" "${gun}")" &
+
+      elif (( arayuz == 2 ))
+      then
+          kdialog --title="${AD^}" --icon=shkapat \
+            --msgbox "$(printf "Sisteminizin ${ilt_1} saat: %s %s" "$saat" "${gun}")" &
+
       elif (( arayuz == 3 ))
       then
           zenity --title="${AD^}" --info --timeout=10 --window-icon=shkapat \
@@ -1153,5 +1181,5 @@ arayuz_saat_dialog() {
   arayuz_saat_dialog
   sleep $bekle && kapat_penceresi aski || exit $?
 } # }}}
-
+(( AYIKLA == 2 )) && set +x
 # vim:set ts=2 sw=2 et:
