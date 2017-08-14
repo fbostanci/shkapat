@@ -352,6 +352,10 @@ kapat_penceresi() {
         qdbus $gor Set org.kde.kdialog.ProgressDialog value $c
         qdbus $gor setLabelText "$d saniye sonra sistem ${ilt_2}"
         ((d--)); sleep 1
+        [[ $(qdbus $gor wasCancelled) != false ]] && {
+          qdbus $gor close
+          exit 1
+        }
       }
       qdbus $gor close; bilg_kapat $islem_sin
   elif test -x "$(which yad 2>/dev/null)"
@@ -508,15 +512,15 @@ done # }}}
               --sticky --center \
               --width=340 --height=300 --no-headers \
               --list --hide-column=1 --print-column=1 \
-              --column=' ' --column=' ' --separator='' \
-              yb 'Şimdi yeniden başlat' \
-              kt 'Şimdi kapat' \
-              ot 'Şimdi oturum kapat' \
-              sp 'Şimdi askıya al' \
-              sa 'Girilecek saatte kapat' \
-              st 'Girilecek saatte askıya al' \
-              dk 'Girilecek dakika sonra kapat' \
-              sd 'Girilecek dakika sonra askıya al')
+              --column=' '  --column='d:IMG' --column=' ' --separator='' \
+              yb 'system-reboot'   'Şimdi yeniden başlat' \
+              kt 'system-shutdown' 'Şimdi kapat' \
+              ot 'system-log-out'  'Şimdi oturum kapat' \
+              sp 'system-suspend'  'Şimdi askıya al' \
+              sa 'chronometer'     'Girilecek saatte kapat' \
+              st 'chronometer'     'Girilecek saatte askıya al' \
+              dk 'chronometer'     'Girilecek dakika sonra kapat' \
+              sd 'chronometer'     'Girilecek dakika sonra askıya al')
       (( $? == 1 )) && exit 1
 
       if [[ $donus = yb ]]
@@ -902,6 +906,10 @@ arayuz_dialog() {
             qdbus $gor Set org.kde.kdialog.ProgressDialog value $c
             qdbus $gor setLabelText "$d saniye sonra ${ilt_2}"
             ((d--)); sleep 1
+            [[ $(qdbus $gor wasCancelled) != false ]] && {
+              qdbus $gor close
+              exit 1
+            }
           }
           qdbus $gor close
       elif (( arayuz == 2 ))
