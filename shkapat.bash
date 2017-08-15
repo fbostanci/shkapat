@@ -23,6 +23,7 @@
 ## along with this program. If not, see http://www.gnu.org/licenses/.
 #
 #
+AD=shkapat
 [[ $(id -u) == 0 ]] && {
   printf '%s: root haklarıyla çalıştırılamaz.\n' "${AD}" >&2
   exit 1
@@ -37,9 +38,7 @@
 AYIKLA=${AYIKLA:-0}
 (( AYIKLA == 2 )) && set -x
 ### Değişkenler - Giriş {{{
-AD=shkapat
 SURUM=2.0.0
-
 ARAYUZ=0
 YENIDEN_BASLAT=0
 SIMDI_KAPAT=0
