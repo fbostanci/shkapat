@@ -1,6 +1,6 @@
 #
 #
-#	Shkapat 2.0 Makefile
+#	Shkapat 2.0.0 Makefile
 #
 #
 

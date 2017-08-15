@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#                     Shkapat 2.0  -  Süre ayarlı bilgisayar kapatıcı
+#                     Shkapat 2.0.0  -  Süre ayarlı bilgisayar kapatıcı
 #
 ##
 ##       Copyright (c) 2010-2017  Fatih Bostancı  <fbostanci@vivaldi.net>
@@ -23,12 +23,22 @@
 ## along with this program. If not, see http://www.gnu.org/licenses/.
 #
 #
+[[ $(id -u) == 0 ]] && {
+  printf '%s: root haklarıyla çalıştırılamaz.\n' "${AD}" >&2
+  exit 1
+}
 
-AYIKLA=${AYIKLA:-1}
+# AYIKLA=0 : betik normal şekilde çalışır. (varsayılan)
+# Hata ayıklama süreçleri için:
+# AYIKLA=1 : betik çalıştırılacak işlemin komutunu yazar ve çıkar, işlem gerçekleşmez.
+# AYIKLA=2 : set -x ile tüm süreç ekrana basılır.
+#            Son olarak çalıştırılacak komutu yazar ve çıkar, işlem gerçekleşmez.
+# Örnek kullanım: AYIKLA=1 shkapat --oturum-kapat
+AYIKLA=${AYIKLA:-0}
 (( AYIKLA == 2 )) && set -x
 ### Değişkenler - Giriş {{{
 AD=shkapat
-SURUM=2.0
+SURUM=2.0.0
 
 ARAYUZ=0
 YENIDEN_BASLAT=0

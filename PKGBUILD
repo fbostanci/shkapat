@@ -1,7 +1,7 @@
 # Maintainer: Fatih Bostancı <faopera@gmail.com>
 
 pkgname=shkapat
-pkgver=2.0
+pkgver=2.0.0
 pkgrel=1
 pkgdesc="Süre ayarlı bilgisayar kapatıcı"
 license=('GPL3')
@@ -20,7 +20,6 @@ package() {
   cd "${srcdir}"/${pkgname}
 
   #${EDITOR:-nano} Makefile
-  msg "make başlatılıyor..."
   make DESTDIR="${pkgdir}" install
 }
 
