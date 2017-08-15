@@ -4,10 +4,10 @@ Priority: extra
 Maintainer: Fatih Bostancı <faopera@gmail.com>
 Build-Depends: debhelper (>= 9)
 Standards-Version: 3.9.8
-Homepage: https://gitorious.org/shkapat
+Homepage: https://gitlab.com/fbostanci/shkapat
 
 Package: shkapat
 Architecture: all
-Depends:
+Depends: ${misc:Depends}, sed, grep, gawk
 Description: Shkapat
  Normal sekilde sisteminizi kapatma ve yeniden baslatma yaninda saat ya da dakika olarak gireceginiz zamanda sisteminizi kapatmanizi saglar.

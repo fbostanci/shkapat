@@ -1125,10 +1125,10 @@ arayuz_saat_dialog() {
         exit 1
     fi
   }
-  export $(awk -F':' '{printf "_saat=%s\ndakika=%s", $1,$2;}' <<<$saat)
-  sonuc=$(printf "$_saat$dakika $(date +%H%M)" | awk '{if($1 > $2) print(1); else if($1 < $2) print(2); else print(0);}')
+  export $(gawk -F':' '{printf "_saat=%s\ndakika=%s", $1,$2;}' <<<$saat)
+  sonuc=$(printf "$_saat$dakika $(date +%H%M)" | gawk '{if($1 > $2) print(1); else if($1 < $2) print(2); else print(0);}')
 
-  [[ $(printf "$_saat 23" | awk '{if($1 > $2) print(1); else if($1 < $2) print(2); else print(0);}') == 1  ]] && {
+  [[ $(printf "$_saat 23" | gawk '{if($1 > $2) print(1); else if($1 < $2) print(2); else print(0);}') == 1  ]] && {
     if (( ARAYUZ ))
     then
         if (( arayuz == 1 ))
