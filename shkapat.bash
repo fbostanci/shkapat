@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#                     Shkapat 2.0.0  -  Süre ayarlı bilgisayar kapatıcı
+#                     Shkapat 2.0.1  -  Süre ayarlı bilgisayar kapatıcı
 #
 ##
 ##       Copyright (c) 2010-2017  Fatih Bostancı  <fbostanci@vivaldi.net>
@@ -37,8 +37,9 @@ AD=shkapat
 # Örnek kullanım: AYIKLA=1 shkapat --oturum-kapat
 AYIKLA=${AYIKLA:-0}
 (( AYIKLA == 2 )) && set -x
+# gsettings set com.canonical.indicator.session suppress-logout-restart-shutdown true
 ### Değişkenler - Giriş {{{
-SURUM=2.0.0
+SURUM=2.0.1
 ARAYUZ=0
 YENIDEN_BASLAT=0
 SIMDI_KAPAT=0
@@ -247,50 +248,6 @@ bilg_kapat() {
       then
           calisacak "xfce4-session-logout --logout"
           xfce4-session-logout --logout
-      fi
-
-  elif ps -e | grep -E '^.* cinnamon$' > /dev/null
-  then
-      if (( istek == 1 ))
-      then
-          calisacak "cinnamon-session-quit --reboot --force"
-          cinnamon-session-quit --reboot --force
-      elif (( istek == 2 ))
-      then
-          calisacak "cinnamon-session-quit --poweroff --force"
-          cinnamon-session-quit --poweroff --force
-      elif (( istek == 3 ))
-      then
-          pidof systemd &>/dev/null && {
-            calisacak "systemctl suspend"
-            systemctl suspend
-          }
-      elif (( istek == 4 ))
-      then
-          calisacak "cinnamon-session-quit --logout --no-prompt"
-          cinnamon-session-quit --logout --no-prompt
-      fi
-
-  elif ps -e | grep -E '^.* gnome-session$' > /dev/null
-  then
-      if (( istek == 1 ))
-      then
-          calisacak "gnome-session-quit --reboot --force"
-          gnome-session-quit --reboot --force
-      elif (( istek == 2 ))
-      then
-          calisacak "gnome-session-quit --poweroff --force"
-          gnome-session-quit --poweroff --force
-      elif (( istek == 3 ))
-      then
-          pidof systemd &>/dev/null && {
-            calisacak "systemctl suspend"
-            systemctl suspend
-          }
-      elif (( istek == 4 ))
-      then
-          calisacak "gnome-session-quit --logout --no-prompt"
-          gnome-session-quit --logout --no-prompt
       fi
 
   elif pidof systemd &>/dev/null
