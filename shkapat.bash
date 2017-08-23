@@ -79,18 +79,6 @@ pid_denetle() {
                    'Şimdi iptal etmek ister misiniz?')"
         if (( arayuz == 1 ))
         then
-            kdialog --title="${AD^}" --icon=shkapat --warningyesno "${ileti}"
-            case $? in
-              0)
-                kill -9 ${pid} &>/dev/null &&
-                kdialog --title="${AD^}" --icon=shkapat \
-                  --msgbox 'Görev iptal edildi.'
-                exit 0 ;;
-              1)
-                exit 1 ;;
-            esac
-        elif (( arayuz == 2 ))
-        then
             yad --title="${AD^}" --window-icon=shkapat --sticky --center \
             --fixed --on-top --text "${ileti}"
             case $? in
@@ -102,6 +90,19 @@ pid_denetle() {
               1)
                 exit 1 ;;
             esac
+        elif (( arayuz == 2 ))
+        then
+            kdialog --title="${AD^}" --icon=shkapat --warningyesno "${ileti}"
+            case $? in
+              0)
+                kill -9 ${pid} &>/dev/null &&
+                kdialog --title="${AD^}" --icon=shkapat \
+                  --msgbox 'Görev iptal edildi.'
+                exit 0 ;;
+              1)
+                exit 1 ;;
+            esac
+
         elif (( arayuz == 3 ))
         then
             zenity --title="${AD^}" --question --timeout=10 --window-icon=shkapat \
@@ -785,7 +786,7 @@ done # }}}
                          --entry --entry-text="$(date -d '1 minute' +%H:%M)" \
                          --sticky --center --fixed --window-icon=shkapat)
           (( $? == 1 )) && exit 1
-  
+
       elif test -x "$(which kdialog 2>/dev/null)"
       then
           arayuz=2
